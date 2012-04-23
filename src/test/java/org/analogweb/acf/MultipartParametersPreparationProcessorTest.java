@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 import org.analogweb.Invocation;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MultipartHttpServletRequest;
@@ -19,7 +18,6 @@ import org.analogweb.MultipartParameters;
 import org.analogweb.RequestAttributes;
 import org.analogweb.RequestContext;
 import org.analogweb.TypeMapperContext;
-import org.analogweb.acf.MultipartParametersPreparationProcessor;
 import org.analogweb.util.ReflectionUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +43,7 @@ public class MultipartParametersPreparationProcessorTest {
 
     @Test
     public void testPrepareInvoke() throws Exception {
-        Method method = ReflectionUtils.getDeclaredMethodQuietly(getClass(), "doSomething",
+        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
                 new Class<?>[0]);
 
         when(metadata.getArgumentTypes()).thenReturn(
@@ -65,7 +63,7 @@ public class MultipartParametersPreparationProcessorTest {
 
     @Test
     public void testPrepareInvokeNotContainsMultipartParameterArgument() throws Exception {
-        Method method = ReflectionUtils.getDeclaredMethodQuietly(getClass(), "doSomething",
+        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
                 new Class<?>[0]);
 
         when(metadata.getArgumentTypes())
@@ -84,7 +82,7 @@ public class MultipartParametersPreparationProcessorTest {
 
     @Test
     public void testPrepareInvokeNotMultipartRequest() throws Exception {
-        Method method = ReflectionUtils.getDeclaredMethodQuietly(getClass(), "doSomething",
+        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
                 new Class<?>[0]);
 
         HttpServletRequest request = mock(HttpServletRequest.class);
