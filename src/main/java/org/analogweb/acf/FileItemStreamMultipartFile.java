@@ -52,7 +52,7 @@ public class FileItemStreamMultipartFile implements MultipartFile {
             return Arrays.copyOf(this.extracted, this.extracted.length);
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        IOUtils.copy(getInputStream(), out);
+        IOUtils.copyQuietly(getInputStream(), out);
         return out.toByteArray();
     }
 
