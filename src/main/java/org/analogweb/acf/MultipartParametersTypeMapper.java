@@ -2,6 +2,8 @@ package org.analogweb.acf;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.List;
 
 import org.analogweb.MultipartFile;
 import org.analogweb.MultipartParameters;
@@ -35,6 +37,16 @@ public class MultipartParametersTypeMapper implements TypeMapper {
 			return toMultipartParameters(from);
 		} else if (isEqualsType(byte[].class, requiredType)) {
 			return toByteArray(from);
+		} else if (isEqualsType(File.class, requiredType)) {
+			return toFile(context,from);
+		}
+		return null;
+	}
+
+	protected File toFile(RequestContext context,Object from) {
+		MultipartFile mf = getSingleInstance(MultipartFile.class, from);
+		if(mf != null){
+			return TemporaryUploadFolder.require(context, mf);
 		}
 		return null;
 	}
@@ -61,6 +73,37 @@ public class MultipartParametersTypeMapper implements TypeMapper {
 		if (MultipartParameters.class.isInstance(from)) {
 			return (MultipartParameters) from;
 		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <T> T getSingleInstance(Class<T> type,Object obj){
+		if(obj == null){
+			return null;
+		}
+		if(type.isInstance(obj)){
+			log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE,
+					"TACF000007", type);
+			return (T)obj;
+		}
+		if(obj.getClass().isArray()){
+			obj = Array.get(obj, 0);
+			if(type.isInstance(obj)){
+				log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE,
+						"TACF000007", type);
+				return (T)obj;
+			}
+		}
+		if(List.class.isInstance(obj)){
+			List<?> list = (List<?>)obj;
+			if(!list.isEmpty() && (type.isInstance(obj = list.get(0)))){
+				log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE,
+						"TACF000007", type);
+				return (T)obj;
+			}
+		}
+		log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE,
+				"TACF000008", File.class.getCanonicalName());
 		return null;
 	}
 }

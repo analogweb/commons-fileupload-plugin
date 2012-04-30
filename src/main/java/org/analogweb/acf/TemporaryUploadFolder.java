@@ -56,6 +56,9 @@ public class TemporaryUploadFolder implements Serializable {
 	}
 
 	public File require(MultipartFile multipartFile) {
+		if(!getBaseDir().exists()){
+			getBaseDir().mkdirs();
+		}
 		File file = new File(getBaseDir().getPath() + "/"
 				+ multipartFile.getParameterName());
 		if (!file.exists()) {
@@ -64,6 +67,8 @@ public class TemporaryUploadFolder implements Serializable {
 			try {
 				out = new FileOutputStream(file);
 				IOUtils.copy(in, out);
+				log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000006",
+						file.getPath());
 			} catch (IOException e) {
 				log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000002",
 						multipartFile.getParameterName());
@@ -73,6 +78,9 @@ public class TemporaryUploadFolder implements Serializable {
 				IOUtils.closeQuietly(in);
 				IOUtils.closeQuietly(out);
 			}
+		} else {
+			log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000007",
+					file.getPath());
 		}
 		return file;
 	}
@@ -80,6 +88,29 @@ public class TemporaryUploadFolder implements Serializable {
 	public static File require(RequestContext context,
 			MultipartFile multipartFile) {
 		return current(context).require(multipartFile);
+	}
+
+	public void dispose() {
+		File baseDir = getBaseDir();
+		if(baseDir != null){
+			deleteRecurciverely(baseDir);
+			baseDir.delete();
+			log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000008",
+					baseDir.getPath());
+		}
+	}
+
+	private void deleteRecurciverely(File dir) {
+		File[] listFiles = dir.listFiles();
+		if(listFiles != null){
+			for (File f : listFiles) {
+				if (f.isDirectory()) {
+					deleteRecurciverely(f);
+				} else {
+					f.delete();
+				}
+			}
+		}
 	}
 
 }

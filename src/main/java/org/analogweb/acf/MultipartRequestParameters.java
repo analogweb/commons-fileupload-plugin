@@ -62,7 +62,7 @@ public class MultipartRequestParameters implements MultipartParameters {
             for(final MultipartFile file : entry.getValue()){
                 result.add(new MultipartParameter() {
                     @Override
-                    @SuppressWarnings("unchecked")
+                    @SuppressWarnings("unchecked")                                                                                                                                                                                                           
                     public MultipartFile value() {
                         return file;
                     }

@@ -79,8 +79,12 @@ public class TemporaryUploadFolderTest {
 				new ByteArrayInputStream("this is test!".getBytes()));
 
 		File actual = file.require(multipartFile);
+		assertThat(actual.exists(),is(true));
 		assertThat(new BufferedReader(new FileReader(actual)).readLine(),
 				is("this is test!"));
+
+		file.dispose();
+		assertThat(actual.exists(),is(false));
 	}
 
 	@Test

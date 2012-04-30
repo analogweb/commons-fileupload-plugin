@@ -22,7 +22,6 @@ import org.analogweb.core.AbstractInvocationProcessor;
  * それ以外の型(サブタイプ等)が指定されていても値は適用されません。
  * @author snowgoose
  */
-@Deprecated
 public class MultipartParametersPreparationProcessor extends AbstractInvocationProcessor {
 
     @Override
