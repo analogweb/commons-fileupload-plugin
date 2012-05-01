@@ -34,8 +34,6 @@ public class TemporaryUploadFolder implements Serializable {
 					new File(createCurrentDirName(props, context)));
 			context.getRequest().setAttribute(TMP_DIR, newFolder);
 			tmpDir = context.getRequest().getAttribute(TMP_DIR);
-			log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000005", newFolder
-					.getBaseDir().toString());
 		}
 		return (TemporaryUploadFolder) tmpDir;
 	}
@@ -56,10 +54,12 @@ public class TemporaryUploadFolder implements Serializable {
 	}
 
 	public File require(MultipartFile multipartFile) {
-		if(!getBaseDir().exists()){
-			getBaseDir().mkdirs();
+		File base = getBaseDir();
+		if(!base.exists()){
+			base.mkdirs();
+			log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000005", base.toString());
 		}
-		File file = new File(getBaseDir().getPath() + "/"
+		File file = new File(base.getPath() + "/"
 				+ multipartFile.getParameterName());
 		if (!file.exists()) {
 			FileOutputStream out = null;
@@ -72,7 +72,7 @@ public class TemporaryUploadFolder implements Serializable {
 			} catch (IOException e) {
 				log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000002",
 						multipartFile.getParameterName());
-				log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000003", e, getBaseDir());
+				log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000003", e, base);
 				return null;
 			} finally {
 				IOUtils.closeQuietly(in);
@@ -92,7 +92,7 @@ public class TemporaryUploadFolder implements Serializable {
 
 	public void dispose() {
 		File baseDir = getBaseDir();
-		if(baseDir != null){
+		if(baseDir != null && baseDir.exists()){
 			deleteRecurciverely(baseDir);
 			baseDir.delete();
 			log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000008",
