@@ -25,7 +25,7 @@ import org.analogweb.core.AbstractInvocationProcessor;
 public class MultipartParametersPreparationProcessor extends AbstractInvocationProcessor {
 
     @Override
-    public Invocation prepareInvoke(Method method, Invocation invocation,
+    public Object prepareInvoke(Method method, Invocation invocation,
             InvocationMetadata metadata, RequestContext context, RequestAttributes attributes,
             TypeMapperContext converters) {
         HttpServletRequest request = context.getRequest();
@@ -39,7 +39,7 @@ public class MultipartParametersPreparationProcessor extends AbstractInvocationP
                 }
             }
         }
-        return invocation;
+        return NO_INTERRUPTION;
     }
 
     private List<Integer> findIndexOfMultipartParameters(Class<?>[] argTypes) {

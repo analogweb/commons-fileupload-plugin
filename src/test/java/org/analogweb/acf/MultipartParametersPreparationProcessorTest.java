@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.Invocation;
 import org.analogweb.InvocationMetadata;
+import org.analogweb.InvocationProcessor;
 import org.analogweb.MultipartHttpServletRequest;
 import org.analogweb.MultipartParameters;
 import org.analogweb.RequestAttributes;
@@ -53,10 +54,10 @@ public class MultipartParametersPreparationProcessorTest {
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Invocation actual = processor.prepareInvoke(method, invocation, metadata, context,
+        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
                 attributes, converters);
 
-        assertThat(actual, is(sameInstance(invocation)));
+        assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
         verify(invocation).putPreparedArg(1, params);
     }
@@ -73,10 +74,10 @@ public class MultipartParametersPreparationProcessorTest {
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Invocation actual = processor.prepareInvoke(method, invocation, metadata, context,
+        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
                 attributes, converters);
 
-        assertThat(actual, is(sameInstance(invocation)));
+        assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
     }
 
@@ -88,10 +89,10 @@ public class MultipartParametersPreparationProcessorTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(context.getRequest()).thenReturn(request);
 
-        Invocation actual = processor.prepareInvoke(method, invocation, metadata, context,
+        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
                 attributes, converters);
 
-        assertThat(actual, is(sameInstance(invocation)));
+        assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
     }
 
     public Object doSomething() {
