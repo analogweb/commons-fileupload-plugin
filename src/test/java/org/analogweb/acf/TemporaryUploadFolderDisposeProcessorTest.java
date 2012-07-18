@@ -1,7 +1,7 @@
 package org.analogweb.acf;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
-import org.analogweb.Invocation;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MultipartFile;
 import org.analogweb.RequestContext;
@@ -61,7 +61,8 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 		ApplicationPropertiesHolder.dispose(app);
 	}
 
-	@Test
+	@SuppressWarnings("resource")
+    @Test
 	public void testRequire() throws Exception {
 
 		when(context.getRequest()).thenReturn(request);
@@ -86,7 +87,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 		assertThat(new BufferedReader(new FileReader(actual)).readLine(),
 				is("this is test!"));
 
-		processor.afterCompletion(context, (Invocation)null, (InvocationMetadata)null, new Object());
+		processor.afterCompletion(context, (InvocationArguments)null, (InvocationMetadata)null, new Object());
 
 		assertThat(actual.exists(),is(false));
 	}

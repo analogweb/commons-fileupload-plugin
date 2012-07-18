@@ -2,8 +2,12 @@ package org.analogweb.acf;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -58,7 +62,8 @@ public class TemporaryUploadFolderTest {
 		ApplicationPropertiesHolder.dispose(app);
 	}
 
-	@Test
+    @Test
+    @SuppressWarnings("resource")
 	public void testRequire() throws Exception {
 
 		when(context.getRequest()).thenReturn(request);
@@ -88,6 +93,7 @@ public class TemporaryUploadFolderTest {
 	}
 
 	@Test
+    @SuppressWarnings("resource")
 	public void testRequireSecond() throws Exception {
 
 		when(context.getRequest()).thenReturn(request);
@@ -113,6 +119,7 @@ public class TemporaryUploadFolderTest {
 	}
 
 	@Test
+    @SuppressWarnings("resource")
 	public void testSimplyRequire() throws Exception {
 
 		when(context.getRequest()).thenReturn(request);

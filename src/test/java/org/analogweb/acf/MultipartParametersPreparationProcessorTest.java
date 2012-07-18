@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.analogweb.Invocation;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.InvocationProcessor;
 import org.analogweb.MultipartHttpServletRequest;
@@ -26,7 +26,7 @@ import org.junit.Test;
 public class MultipartParametersPreparationProcessorTest {
 
     private MultipartParametersPreparationProcessor processor;
-    private Invocation invocation;
+    private InvocationArguments invocation;
     private InvocationMetadata metadata;
     private RequestContext context;
     private RequestAttributes attributes;
@@ -35,7 +35,7 @@ public class MultipartParametersPreparationProcessorTest {
     @Before
     public void setUp() throws Exception {
         processor = new MultipartParametersPreparationProcessor();
-        invocation = mock(Invocation.class);
+        invocation = mock(InvocationArguments.class);
         metadata = mock(InvocationMetadata.class);
         context = mock(RequestContext.class);
         attributes = mock(RequestAttributes.class);
@@ -59,7 +59,7 @@ public class MultipartParametersPreparationProcessorTest {
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
-        verify(invocation).putPreparedArg(1, params);
+        verify(invocation).putInvocationArgument(1, params);
     }
 
     @Test

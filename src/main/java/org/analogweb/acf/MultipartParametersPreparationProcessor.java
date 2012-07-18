@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.analogweb.Invocation;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MultipartHttpServletRequest;
 import org.analogweb.MultipartParameters;
@@ -25,7 +25,7 @@ import org.analogweb.core.AbstractInvocationProcessor;
 public class MultipartParametersPreparationProcessor extends AbstractInvocationProcessor {
 
     @Override
-    public Object prepareInvoke(Method method, Invocation invocation,
+    public Object prepareInvoke(Method method, InvocationArguments args,
             InvocationMetadata metadata, RequestContext context, RequestAttributes attributes,
             TypeMapperContext converters) {
         HttpServletRequest request = context.getRequest();
@@ -35,7 +35,7 @@ public class MultipartParametersPreparationProcessor extends AbstractInvocationP
                 MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
                 MultipartParameters params = multi.getMultipartParameters();
                 for (int index : indexes) {
-                    invocation.putPreparedArg(index, params);
+                    args.putInvocationArgument(index, params);
                 }
             }
         }

@@ -2,8 +2,9 @@ package org.analogweb.acf;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -131,7 +132,8 @@ public class MultipartParametersTypeMapperTest extends
 		}
 	}
 
-	private String readLine(File file) throws IOException {
+	@SuppressWarnings("resource")
+    private String readLine(File file) throws IOException {
 		return new BufferedReader(new FileReader(file)).readLine();
 	}
 
