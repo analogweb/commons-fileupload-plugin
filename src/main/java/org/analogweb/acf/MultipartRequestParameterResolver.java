@@ -1,4 +1,3 @@
-
 package org.analogweb.acf;
 
 import static org.analogweb.acf.CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE;
@@ -12,6 +11,7 @@ import org.analogweb.MultipartFile;
 import org.analogweb.MultipartHttpServletRequest;
 import org.analogweb.MultipartParameters;
 import org.analogweb.RequestContext;
+import org.analogweb.ServletRequestContext;
 import org.analogweb.core.ParameterScopeRequestAttributesResolver;
 import org.analogweb.util.StringUtils;
 import org.analogweb.util.logging.Log;
@@ -30,28 +30,34 @@ public class MultipartRequestParameterResolver extends ParameterScopeRequestAttr
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object resolveAttributeValue(RequestContext requestContext, InvocationMetadata metadata, String name) {
-        HttpServletRequest request = requestContext.getRequest();
-        if (request instanceof MultipartHttpServletRequest) {
-            log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000001");
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-            Object value = super.resolveAttributeValue(requestContext, metadata, name);
-            if (value != null) {
+    public Object resolveAttributeValue(RequestContext requestContext, InvocationMetadata metadata,
+            String name, Class<?> requiredType) {
+        if (requestContext instanceof ServletRequestContext) {
+            HttpServletRequest request = ((ServletRequestContext) requestContext)
+                    .getServletRequest();
+
+            if (request instanceof MultipartHttpServletRequest) {
+                log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000001");
+                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+                Object value = super.resolveAttributeValue(requestContext, metadata, name,
+                        requiredType);
+                if (value != null) {
+                    log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name, value });
+                    return value;
+                }
+                if (StringUtils.isEmpty(name)) {
+                    return multipartRequest.getMultipartParameters();
+                }
+                value = multipartRequest.getFileParameterValues(name);
+                if (value == null || ((List<MultipartFile>) value).isEmpty()) {
+                    value = multipartRequest.getFileParameter(name);
+                }
                 log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name, value });
                 return value;
             }
-            if (StringUtils.isEmpty(name)) {
-                return multipartRequest.getMultipartParameters();
-            }
-            value = multipartRequest.getFileParameterValues(name);
-            if (value == null || ((List<MultipartFile>) value).isEmpty()) {
-                value = multipartRequest.getFileParameter(name);
-            }
-            log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name, value });
-            return value;
+            log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000005");
         }
-        log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000005");
-        return super.resolveAttributeValue(requestContext, metadata, name);
+        return super.resolveAttributeValue(requestContext, metadata, name, requiredType);
     }
 
 }

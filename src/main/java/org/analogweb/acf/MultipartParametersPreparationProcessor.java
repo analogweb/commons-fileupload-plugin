@@ -6,12 +6,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.analogweb.Invocation;
+import org.analogweb.AttributesHandlers;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MultipartHttpServletRequest;
 import org.analogweb.MultipartParameters;
-import org.analogweb.RequestAttributes;
 import org.analogweb.RequestContext;
+import org.analogweb.ServletRequestContext;
 import org.analogweb.TypeMapperContext;
 import org.analogweb.core.AbstractInvocationProcessor;
 
@@ -25,17 +26,19 @@ import org.analogweb.core.AbstractInvocationProcessor;
 public class MultipartParametersPreparationProcessor extends AbstractInvocationProcessor {
 
     @Override
-    public Object prepareInvoke(Method method, Invocation invocation,
-            InvocationMetadata metadata, RequestContext context, RequestAttributes attributes,
-            TypeMapperContext converters) {
-        HttpServletRequest request = context.getRequest();
-        if (request instanceof MultipartHttpServletRequest) {
-            List<Integer> indexes = findIndexOfMultipartParameters(metadata.getArgumentTypes());
-            if (indexes.isEmpty() == false) {
-                MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
-                MultipartParameters params = multi.getMultipartParameters();
-                for (int index : indexes) {
-                    invocation.putPreparedArg(index, params);
+    public Object prepareInvoke(Method method, InvocationArguments args,
+            InvocationMetadata metadata, RequestContext context,
+            TypeMapperContext converters,AttributesHandlers handlers) {
+        if(context instanceof ServletRequestContext){
+            HttpServletRequest request = ((ServletRequestContext)context).getServletRequest();
+            if (request instanceof MultipartHttpServletRequest) {
+                List<Integer> indexes = findIndexOfMultipartParameters(metadata.getArgumentTypes());
+                if (indexes.isEmpty() == false) {
+                    MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
+                    MultipartParameters params = multi.getMultipartParameters();
+                    for (int index : indexes) {
+                        args.putInvocationArgument(index, params);
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 package org.analogweb.acf;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
-import org.analogweb.Invocation;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MultipartFile;
-import org.analogweb.RequestContext;
+import org.analogweb.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ApplicationPropertiesHolder.Creator;
 import org.junit.After;
@@ -31,64 +31,63 @@ import org.junit.rules.TemporaryFolder;
 
 public class TemporaryUploadFolderDisposeProcessorTest {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-	
-	private TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
-	private RequestContext context;
-	private MultipartFile multipartFile;
+    private TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
 
-	private Application app;
-	private ApplicationProperties props;
-	private Creator creator;
-	private HttpServletRequest request;
+    private ServletRequestContext context;
+    private MultipartFile multipartFile;
 
-	@Before
-	public void setUp() {
-		context = mock(RequestContext.class);
-		multipartFile = mock(MultipartFile.class);
-		creator = mock(Creator.class);
-		app = mock(Application.class);
-		props = mock(ApplicationProperties.class);
-		when(creator.create()).thenReturn(props);
-		ApplicationPropertiesHolder.configure(app, creator);
-		request = mock(HttpServletRequest.class);
-	}
-	
-	@After
-	public void tearDown(){
-		ApplicationPropertiesHolder.dispose(app);
-	}
+    private Application app;
+    private ApplicationProperties props;
+    private Creator creator;
+    private HttpServletRequest request;
 
-	@Test
-	public void testRequire() throws Exception {
+    @Before
+    public void setUp() {
+        context = mock(ServletRequestContext.class);
+        multipartFile = mock(MultipartFile.class);
+        creator = mock(Creator.class);
+        app = mock(Application.class);
+        props = mock(ApplicationProperties.class);
+        when(creator.create()).thenReturn(props);
+        ApplicationPropertiesHolder.configure(app, creator);
+        request = mock(HttpServletRequest.class);
+    }
 
-		when(context.getRequest()).thenReturn(request);
+    @After
+    public void tearDown() {
+        ApplicationPropertiesHolder.dispose(app);
+    }
 
-		File testFolder = folder.newFolder("test1");
-		when(props.getTempDir()).thenReturn(testFolder);
-		when(request.getAttribute(TemporaryUploadFolder.TMP_DIR))
-				.thenReturn(null).thenReturn(
-						new TemporaryUploadFolder(testFolder));
+    @Test
+    public void testRequire() throws Exception {
 
-		doNothing().when(request).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
-				isA(TemporaryUploadFolder.class));
+        when(context.getServletRequest()).thenReturn(request);
 
-		TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
+        File testFolder = folder.newFolder("test1");
+        when(props.getTempDir()).thenReturn(testFolder);
+        when(request.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(null).thenReturn(
+                new TemporaryUploadFolder(testFolder));
 
-		when(multipartFile.getParameterName()).thenReturn("some");
-		when(multipartFile.getInputStream()).thenReturn(
-				new ByteArrayInputStream("this is test!".getBytes()));
+        doNothing().when(request).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
+                isA(TemporaryUploadFolder.class));
 
-		File actual = file.require(multipartFile);
-		assertThat(actual.exists(),is(true));
-		assertThat(new BufferedReader(new FileReader(actual)).readLine(),
-				is("this is test!"));
+        TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
 
-		processor.afterCompletion(context, (Invocation)null, (InvocationMetadata)null, new Object());
+        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getInputStream()).thenReturn(
+                new ByteArrayInputStream("this is test!".getBytes()));
 
-		assertThat(actual.exists(),is(false));
-	}
+        File actual = file.require(multipartFile);
+        assertThat(actual.exists(), is(true));
+        assertThat(new BufferedReader(new FileReader(actual)).readLine(), is("this is test!"));
+
+        processor.afterCompletion(context, (InvocationArguments) null, (InvocationMetadata) null,
+                new Object());
+
+        assertThat(actual.exists(), is(false));
+    }
 
 }

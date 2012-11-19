@@ -14,13 +14,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.analogweb.MultipartParameters;
-import org.analogweb.acf.DefaultMultipartHttpServletRequest;
-import org.analogweb.acf.FileItemMultipartFile;
-import org.analogweb.acf.FileUploadFactory;
-import org.analogweb.acf.FileUploadFailureException;
-import org.analogweb.acf.MultipartRequestContextFactory;
+import org.analogweb.ServletRequestContext;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
@@ -107,8 +102,8 @@ public class MultipartRequestContextFactoryTest {
         contextFactory.setFileItemFactory(fileItemFactory);
         contextFactory.setFileUploadFactory(fileUploadFactory);
 
-        HttpServletRequest actual = contextFactory.createRequestContext(servletContext, request,
-                response).getRequest();
+        HttpServletRequest actual = ((ServletRequestContext)contextFactory.createRequestContext(servletContext, request,
+                response)).getServletRequest();
         assertThat(actual, is(instanceOf(DefaultMultipartHttpServletRequest.class)));
         DefaultMultipartHttpServletRequest mrequest = (DefaultMultipartHttpServletRequest) actual;
         MultipartParameters params = mrequest.getMultipartParameters();
@@ -135,8 +130,8 @@ public class MultipartRequestContextFactoryTest {
         when(request.getContentType()).thenReturn("application/x-www-form-urlencoded");
 
         contextFactory = new MultipartRequestContextFactory();
-        HttpServletRequest actual = contextFactory.createRequestContext(servletContext, request,
-                response).getRequest();
+        HttpServletRequest actual = ((ServletRequestContext)contextFactory.createRequestContext(servletContext, request,
+                response)).getServletRequest();
 
         assertThat(actual, is(request));
     }

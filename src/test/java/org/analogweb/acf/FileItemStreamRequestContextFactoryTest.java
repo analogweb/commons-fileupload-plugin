@@ -13,12 +13,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.analogweb.MultipartHttpServletRequest;
-import org.analogweb.acf.FileItemIteratorMultipartParameters;
-import org.analogweb.acf.FileItemIteratorRequestContextFactory;
-import org.analogweb.acf.FileUploadFactory;
-import org.analogweb.acf.FileUploadFailureException;
+import org.analogweb.ServletRequestContext;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.RequestContext;
@@ -60,9 +56,9 @@ public class FileItemStreamRequestContextFactoryTest {
         when(upload.getItemIterator(isA(RequestContext.class))).thenReturn(iterator);
         when(fileUploadFactory.createFileUpload()).thenReturn(upload);
         factory.setFileUploadFactory(fileUploadFactory);
-        org.analogweb.RequestContext actual = factory.createRequestContext(servletContext, request,
-                response);
-        HttpServletRequest actualRequest = actual.getRequest();
+        org.analogweb.ServletRequestContext actual = (ServletRequestContext) factory
+                .createRequestContext(servletContext, request, response);
+        HttpServletRequest actualRequest = actual.getServletRequest();
 
         assertTrue(actualRequest instanceof MultipartHttpServletRequest);
 
@@ -77,10 +73,10 @@ public class FileItemStreamRequestContextFactoryTest {
         when(request.getMethod()).thenReturn("POST");
         when(request.getContentType()).thenReturn("application/x-www-form-urlencoded");
 
-        org.analogweb.RequestContext actual = factory.createRequestContext(servletContext, request,
-                response);
+        org.analogweb.ServletRequestContext actual = (ServletRequestContext) factory
+                .createRequestContext(servletContext, request, response);
 
-        assertThat(actual.getRequest(), is(request));
+        assertThat(actual.getServletRequest(), is(request));
     }
 
     @Test

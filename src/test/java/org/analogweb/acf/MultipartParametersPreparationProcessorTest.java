@@ -11,13 +11,12 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.analogweb.Invocation;
+import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.InvocationProcessor;
 import org.analogweb.MultipartHttpServletRequest;
 import org.analogweb.MultipartParameters;
-import org.analogweb.RequestAttributes;
-import org.analogweb.RequestContext;
+import org.analogweb.ServletRequestContext;
 import org.analogweb.TypeMapperContext;
 import org.analogweb.util.ReflectionUtils;
 import org.junit.Before;
@@ -26,56 +25,54 @@ import org.junit.Test;
 public class MultipartParametersPreparationProcessorTest {
 
     private MultipartParametersPreparationProcessor processor;
-    private Invocation invocation;
     private InvocationMetadata metadata;
-    private RequestContext context;
-    private RequestAttributes attributes;
+    private InvocationArguments args;
+    private ServletRequestContext context;
     private TypeMapperContext converters;
 
     @Before
     public void setUp() throws Exception {
         processor = new MultipartParametersPreparationProcessor();
-        invocation = mock(Invocation.class);
         metadata = mock(InvocationMetadata.class);
-        context = mock(RequestContext.class);
-        attributes = mock(RequestAttributes.class);
+        args = mock(InvocationArguments.class);
+        context = mock(ServletRequestContext.class);
         converters = mock(TypeMapperContext.class);
     }
 
     @Test
     public void testPrepareInvoke() throws Exception {
-        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
-                new Class<?>[0]);
+        Method method = ReflectionUtils
+                .getMethodQuietly(getClass(), "doSomething", new Class<?>[0]);
 
         when(metadata.getArgumentTypes()).thenReturn(
                 new Class<?>[] { String.class, MultipartParameters.class });
         MultipartHttpServletRequest request = mock(MultipartHttpServletRequest.class);
-        when(context.getRequest()).thenReturn(request);
+        when(context.getServletRequest()).thenReturn(request);
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
-                attributes, converters);
+        Object actual = processor.prepareInvoke(method, args, metadata, context, 
+                converters,null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
-        verify(invocation).putPreparedArg(1, params);
+        verify(args).putInvocationArgument(1, params);
     }
 
     @Test
     public void testPrepareInvokeNotContainsMultipartParameterArgument() throws Exception {
-        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
-                new Class<?>[0]);
+        Method method = ReflectionUtils
+                .getMethodQuietly(getClass(), "doSomething", new Class<?>[0]);
 
         when(metadata.getArgumentTypes())
                 .thenReturn(new Class<?>[] { String.class, Integer.class });
         MultipartHttpServletRequest request = mock(MultipartHttpServletRequest.class);
-        when(context.getRequest()).thenReturn(request);
+        when(context.getServletRequest()).thenReturn(request);
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
-                attributes, converters);
+        Object actual = processor.prepareInvoke(method, args, metadata, context,
+                converters,null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
@@ -83,14 +80,14 @@ public class MultipartParametersPreparationProcessorTest {
 
     @Test
     public void testPrepareInvokeNotMultipartRequest() throws Exception {
-        Method method = ReflectionUtils.getMethodQuietly(getClass(), "doSomething",
-                new Class<?>[0]);
+        Method method = ReflectionUtils
+                .getMethodQuietly(getClass(), "doSomething", new Class<?>[0]);
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(context.getRequest()).thenReturn(request);
+        when(context.getServletRequest()).thenReturn(request);
 
-        Object actual = processor.prepareInvoke(method, invocation, metadata, context,
-                attributes, converters);
+        Object actual = processor.prepareInvoke(method, args, metadata, context,
+                converters,null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
     }
