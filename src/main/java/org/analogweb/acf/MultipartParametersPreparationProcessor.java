@@ -27,10 +27,10 @@ public class MultipartParametersPreparationProcessor extends AbstractInvocationP
 
     @Override
     public Object prepareInvoke(Method method, InvocationArguments args,
-            InvocationMetadata metadata, RequestContext context,
-            TypeMapperContext converters,AttributesHandlers handlers) {
-        if(context instanceof ServletRequestContext){
-            HttpServletRequest request = ((ServletRequestContext)context).getServletRequest();
+            InvocationMetadata metadata, RequestContext context, TypeMapperContext converters,
+            AttributesHandlers handlers) {
+        if (context instanceof ServletRequestContext) {
+            HttpServletRequest request = ((ServletRequestContext) context).getServletRequest();
             if (request instanceof MultipartHttpServletRequest) {
                 List<Integer> indexes = findIndexOfMultipartParameters(metadata.getArgumentTypes());
                 if (indexes.isEmpty() == false) {

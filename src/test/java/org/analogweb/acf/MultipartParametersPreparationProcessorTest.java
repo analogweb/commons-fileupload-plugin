@@ -51,8 +51,7 @@ public class MultipartParametersPreparationProcessorTest {
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Object actual = processor.prepareInvoke(method, args, metadata, context, 
-                converters,null);
+        Object actual = processor.prepareInvoke(method, args, metadata, context, converters, null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
@@ -71,8 +70,7 @@ public class MultipartParametersPreparationProcessorTest {
         MultipartParameters params = mock(MultipartParameters.class);
         when(request.getMultipartParameters()).thenReturn(params);
 
-        Object actual = processor.prepareInvoke(method, args, metadata, context,
-                converters,null);
+        Object actual = processor.prepareInvoke(method, args, metadata, context, converters, null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
         verify(metadata).getArgumentTypes();
@@ -86,8 +84,7 @@ public class MultipartParametersPreparationProcessorTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(context.getServletRequest()).thenReturn(request);
 
-        Object actual = processor.prepareInvoke(method, args, metadata, context,
-                converters,null);
+        Object actual = processor.prepareInvoke(method, args, metadata, context, converters, null);
 
         assertThat(actual, is(sameInstance(InvocationProcessor.NO_INTERRUPTION)));
     }

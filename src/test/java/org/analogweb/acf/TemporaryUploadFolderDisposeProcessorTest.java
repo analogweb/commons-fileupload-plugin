@@ -89,5 +89,4 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 
         assertThat(actual.exists(), is(false));
     }
-
 }

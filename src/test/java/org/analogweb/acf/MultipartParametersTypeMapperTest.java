@@ -160,5 +160,4 @@ public class MultipartParametersTypeMapperTest extends MultipartParametersTypeMa
                 null);
         assertThat(actual, is(nullValue()));
     }
-
 }
