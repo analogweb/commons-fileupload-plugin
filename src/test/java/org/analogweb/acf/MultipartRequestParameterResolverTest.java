@@ -42,7 +42,7 @@ public class MultipartRequestParameterResolverTest {
     public void testResolveAttributeParameterValue() {
         when(context.getServletRequest()).thenReturn(multipartRequest);
         when(params.getValues("foo")).thenReturn(Arrays.asList("baa"));
-        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", null);
+        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", String.class);
 
         assertThat((String) actual, is("baa"));
     }
@@ -62,7 +62,8 @@ public class MultipartRequestParameterResolverTest {
         when(context.getServletRequest()).thenReturn(multipartRequest);
         MultipartFile file = mock(MultipartFile.class);
         when(multipartRequest.getFileParameter("foo")).thenReturn(file);
-        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", null);
+        Object actual = resolver.resolveAttributeValue(context, metadata, "foo",
+                MultipartFile.class);
 
         assertThat((MultipartFile) actual, is(file));
     }
@@ -75,7 +76,7 @@ public class MultipartRequestParameterResolverTest {
         MultipartFile file2 = mock(MultipartFile.class);
         List<MultipartFile> files = Arrays.asList(file, file2);
         when(multipartRequest.getFileParameterValues("foo")).thenReturn(files);
-        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", null);
+        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", List.class);
 
         List<MultipartFile> actualFiles = (List<MultipartFile>) actual;
         assertThat(actualFiles.get(0), is(file));
@@ -86,7 +87,7 @@ public class MultipartRequestParameterResolverTest {
     public void testResolveAttributeNotAvairableValue() {
         when(context.getServletRequest()).thenReturn(multipartRequest);
         when(multipartRequest.getFileParameterValues("foo")).thenReturn(null);
-        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", null);
+        Object actual = resolver.resolveAttributeValue(context, metadata, "foo", String.class);
 
         assertNull(actual);
     }
@@ -96,7 +97,8 @@ public class MultipartRequestParameterResolverTest {
         MultipartParameters params = mock(MultipartParameters.class);
         when(context.getServletRequest()).thenReturn(multipartRequest);
         when(multipartRequest.getMultipartParameters()).thenReturn(params);
-        Object actual = resolver.resolveAttributeValue(context, metadata, "", null);
+        Object actual = resolver.resolveAttributeValue(context, metadata, "",
+                MultipartParameters.class);
 
         assertThat((MultipartParameters) actual, is(params));
     }
