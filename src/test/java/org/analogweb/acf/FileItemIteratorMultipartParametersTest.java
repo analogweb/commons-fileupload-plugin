@@ -14,11 +14,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-
-import org.analogweb.MultipartFile;
-import org.analogweb.MultipartParameters;
-import org.analogweb.acf.FileItemIteratorMultipartParameters;
-import org.analogweb.acf.FileUploadFailureException;
+import org.analogweb.Multipart;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
@@ -98,52 +94,48 @@ public class FileItemIteratorMultipartParametersTest {
                 new ByteArrayInputStream(new byte[] { 0x30, 0x31, 0x32 }));
 
         parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
-        Iterator<MultipartParameters.MultipartParameter> actual = parameters.iterator();
+        Iterator<FileItemStreamMultipart> actual = parameters.iterator();
 
         assertTrue(actual.hasNext());
 
-        MultipartParameters.MultipartParameter param = actual.next();
+        FileItemStreamMultipart param = actual.next();
         assertTrue(param.isMultipartFile());
-        assertArrayEquals(((MultipartFile) param.value()).getBytes(),
-                new byte[] { 0x00, 0x01, 0x02 });
+        assertArrayEquals(param.getBytes(), new byte[] { 0x00, 0x01, 0x02 });
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertFalse(param.isMultipartFile());
-        assertThat(((String) param.value()), is("foo"));
+        assertThat(new String(param.getBytes()), is("foo"));
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertFalse(param.isMultipartFile());
-        assertThat(((String) param.value()), is("baa"));
+        assertThat(new String(param.getBytes()), is("baa"));
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertTrue(param.isMultipartFile());
-        assertArrayEquals(((MultipartFile) param.value()).getBytes(),
-                new byte[] { 0x10, 0x11, 0x12 });
+        assertArrayEquals(param.getBytes(), new byte[] { 0x10, 0x11, 0x12 });
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertFalse(param.isMultipartFile());
-        assertThat(((String) param.value()), is("foofoo"));
+        assertThat(new String(param.getBytes()), is("foofoo"));
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertTrue(param.isMultipartFile());
-        assertArrayEquals(((MultipartFile) param.value()).getBytes(),
-                new byte[] { 0x20, 0x21, 0x22 });
+        assertArrayEquals(param.getBytes(), new byte[] { 0x20, 0x21, 0x22 });
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertFalse(param.isMultipartFile());
-        assertThat(((String) param.value()), is("foo"));
+        assertThat(new String(param.getBytes()), is("foo"));
         assertTrue(actual.hasNext());
 
         param = actual.next();
         assertTrue(param.isMultipartFile());
-        assertArrayEquals(((MultipartFile) param.value()).getBytes(),
-                new byte[] { 0x30, 0x31, 0x32 });
+        assertArrayEquals(param.getBytes(), new byte[] { 0x30, 0x31, 0x32 });
 
         // end of iterator.
         assertFalse(actual.hasNext());
@@ -252,6 +244,8 @@ public class FileItemIteratorMultipartParametersTest {
 
     @Test
     public void testGetParameterWithInvalidEncoding() throws Exception {
+        
+        thrown.expect(FileUploadFailureException.class);
 
         final FileItemIterator iterator = mock(FileItemIterator.class);
         FileItemStream file1 = mock(FileItemStream.class);
@@ -272,7 +266,7 @@ public class FileItemIteratorMultipartParametersTest {
         when(param1.openStream()).thenReturn(new ByteArrayInputStream("hoge".getBytes()));
 
         parameters = new FileItemIteratorMultipartParameters(iterator, "UnknownEncoding");
-        assertNull((parameters.getParameter("baa")[0]));
+        parameters.getParameter("baa");
     }
 
     @Test
@@ -313,24 +307,25 @@ public class FileItemIteratorMultipartParametersTest {
                 new ByteArrayInputStream(new byte[] { 0x30, 0x31, 0x32 }));
 
         parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
-        MultipartFile[] actual = parameters.getFile("foo");
+        Multipart[] actual = parameters.getMultiparts("foo");
 
         assertThat(actual.length, is(2));
         assertArrayEquals(new byte[] { 0x00, 0x01, 0x02 }, actual[0].getBytes());
         assertArrayEquals(new byte[] { 0x30, 0x31, 0x32 }, actual[1].getBytes());
 
-        actual = parameters.getFile("baz");
+        actual = parameters.getMultiparts("baz");
 
         assertThat(actual.length, is(1));
         assertArrayEquals(new byte[] { 0x10, 0x11, 0x12 }, actual[0].getBytes());
 
-        actual = parameters.getFile("baa");
+        actual = parameters.getMultiparts("baa");
         assertNull(actual);
 
-        Collection<String> names = parameters.getFileParameterNames();
+        Collection<String> names = parameters.getMultipartParameterNames();
         assertThat(names.size(), is(2));
         assertTrue(names.contains("foo"));
         assertTrue(names.contains("baz"));
     }
 
+    
 }

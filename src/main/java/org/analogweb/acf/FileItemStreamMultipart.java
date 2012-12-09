@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-
-import org.analogweb.MultipartFile;
+import org.analogweb.Multipart;
 import org.analogweb.util.IOUtils;
 import org.apache.commons.fileupload.FileItemStream;
 
@@ -15,22 +14,26 @@ import org.apache.commons.fileupload.FileItemStream;
  * 内部的に{@link FileItemStream}を使用する{@link MultipartFile}の実装です。<br/>
  * @author snowgoose
  */
-public class FileItemStreamMultipartFile implements MultipartFile {
+public class FileItemStreamMultipart implements Multipart {
 
     private final FileItemStream item;
     private byte[] extracted;
 
-    public FileItemStreamMultipartFile(FileItemStream item) {
+    public FileItemStreamMultipart(FileItemStream item) {
         this.item = item;
     }
 
+    public boolean isMultipartFile() {
+        return this.item.isFormField() == false;
+    }
+
     @Override
-    public String getParameterName() {
+    public String getName() {
         return this.item.getFieldName();
     }
 
     @Override
-    public String getFileName() {
+    public String getResourceName() {
         return this.item.getName();
     }
 
@@ -68,7 +71,7 @@ public class FileItemStreamMultipartFile implements MultipartFile {
      * などStream APIの利点を生かすことが出来ないことに注意してください。<br/>
      * キーなどによるパラメータ値の参照時などに使用されます。
      */
-    public void extract() {
+    void extract() {
         this.extracted = getBytes();
     }
 

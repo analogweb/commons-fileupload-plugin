@@ -2,22 +2,16 @@ package org.analogweb.acf;
 
 import static org.analogweb.acf.CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-
-import org.analogweb.MultipartFile;
-import org.analogweb.MultipartParameters;
 import org.analogweb.util.ArrayUtils;
-import org.analogweb.util.IOUtils;
 import org.analogweb.util.Maps;
 import org.analogweb.util.logging.Log;
 import org.analogweb.util.logging.Logs;
-import org.analogweb.util.logging.Markers;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
@@ -29,7 +23,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * を読み出すことが可能です。
  * @author snowgoose
  */
-public class FileItemIteratorMultipartParameters implements MultipartParameters {
+public class FileItemIteratorMultipartParameters implements MultipartParameters<FileItemStreamMultipart> {
 
     private static final Log log = Logs.getLog(FileItemIteratorMultipartParameters.class);
     private final FileItemIterator iterator;
@@ -40,9 +34,8 @@ public class FileItemIteratorMultipartParameters implements MultipartParameters 
         this.resolvedEncoding = encoding;
     }
 
-    @Override
-    public Iterator<MultipartParameter> iterator() {
-        return new Iterator<MultipartParameters.MultipartParameter>() {
+    public Iterator<FileItemStreamMultipart> iterator() {
+        return new Iterator<FileItemStreamMultipart>() {
 
             @Override
             public boolean hasNext() {
@@ -56,61 +49,10 @@ public class FileItemIteratorMultipartParameters implements MultipartParameters 
             }
 
             @Override
-            public MultipartParameter next() {
+            public FileItemStreamMultipart next() {
                 try {
-                    FileItemStream stream = iterator.next();
-                    final String fieldName = stream.getFieldName();
-                    if (stream.isFormField()) {
-                        log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000001", new Object[] { fieldName });
-                        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        IOUtils.copy(stream.openStream(), out);
-                        return new MultipartParameter() {
-
-                            @Override
-                            public boolean isMultipartFile() {
-                                return false;
-                            }
-
-                            @Override
-                            public String getParameterName() {
-                                return fieldName;
-                            }
-
-                            @Override
-                            @SuppressWarnings("unchecked")
-                            public String value() {
-                                try {
-                                    return new String(out.toByteArray(), resolvedEncoding);
-                                } catch (UnsupportedEncodingException e) {
-                                    log.log(PLUGIN_MESSAGE_RESOURCE, Markers.VARIABLE_ACCESS,
-                                            "WACF000001", e, fieldName);
-                                    return null;
-                                }
-                            }
-
-                        };
-                    } else {
-                        log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000002", new Object[] { fieldName });
-                        final FileItemStreamMultipartFile file = new FileItemStreamMultipartFile(
-                                stream);
-                        return new MultipartParameter() {
-                            @Override
-                            public boolean isMultipartFile() {
-                                return true;
-                            }
-
-                            @Override
-                            public String getParameterName() {
-                                return fieldName;
-                            }
-
-                            @Override
-                            @SuppressWarnings("unchecked")
-                            public MultipartFile value() {
-                                return file;
-                            }
-                        };
-                    }
+                    final FileItemStream stream = iterator.next();
+                    return new FileItemStreamMultipart(stream);
                 } catch (IOException e) {
                     throw new FileUploadFailureException(e);
                 } catch (FileUploadException e) {
@@ -127,36 +69,30 @@ public class FileItemIteratorMultipartParameters implements MultipartParameters 
 
     private Map<String, String[]> params;
 
-    @Override
     public String[] getParameter(String name) {
         return getParameterMap().get(name);
     }
 
-    @Override
     public Collection<String> getParameterNames() {
         return getParameterMap().keySet();
     }
 
-    @Override
     public Map<String, String[]> getParameterMap() {
         extractParameters();
         return this.params;
     }
 
-    private Map<String, MultipartFile[]> files;
+    private Map<String, FileItemStreamMultipart[]> files;
 
-    @Override
-    public MultipartFile[] getFile(String name) {
-        return getFileMap().get(name);
+    public FileItemStreamMultipart[] getMultiparts(String name) {
+        return asMap().get(name);
     }
 
-    @Override
-    public Collection<String> getFileParameterNames() {
-        return getFileMap().keySet();
+    public Collection<String> getMultipartParameterNames() {
+        return asMap().keySet();
     }
 
-    @Override
-    public Map<String, MultipartFile[]> getFileMap() {
+    public Map<String, FileItemStreamMultipart[]> asMap() {
         extractParameters();
         return this.files;
     }
@@ -167,23 +103,28 @@ public class FileItemIteratorMultipartParameters implements MultipartParameters 
         }
         this.params = Maps.newEmptyHashMap();
         this.files = Maps.newEmptyHashMap();
-        for (MultipartParameter param : this) {
-            String paramName = param.getParameterName();
+        for (FileItemStreamMultipart param : this) {
+            String paramName = param.getName();
             if (param.isMultipartFile()) {
+                log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000002", new Object[] { paramName });
                 if (this.files.containsKey(paramName) == false) {
-                    this.files.put(paramName, new MultipartFile[0]);
+                    this.files.put(paramName, new FileItemStreamMultipart[0]);
                 }
-                MultipartFile[] fileArray = this.files.get(paramName);
-                FileItemStreamMultipartFile file = param.value();
-                file.extract();
-                this.files.put(paramName, ArrayUtils.add(MultipartFile.class, file, fileArray));
+                FileItemStreamMultipart[] fileArray = this.files.get(paramName);
+                this.files.put(paramName,
+                        ArrayUtils.add(FileItemStreamMultipart.class, param, fileArray));
             } else {
+                log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000001", new Object[] { paramName });
                 if (this.params.containsKey(paramName) == false) {
                     this.params.put(paramName, new String[0]);
                 }
                 String[] array = this.params.get(paramName);
-                this.params.put(paramName,
-                        ArrayUtils.add(String.class, (String) param.value(), array));
+                try {
+                    this.params.put(paramName, ArrayUtils.add(String.class,
+                            new String(param.getBytes(), resolvedEncoding), array));
+                } catch (UnsupportedEncodingException e) {
+                    throw new FileUploadFailureException(e);
+                }
             }
         }
     }

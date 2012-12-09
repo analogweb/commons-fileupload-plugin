@@ -24,17 +24,14 @@ public class CommonsFileUploadModulesConfigTest {
 
     @Test
     public void testPrepare() {
-        when(builder.setRequestContextFactoryClass(FileItemIteratorRequestContextFactory.class))
-                .thenReturn(builder);
-        when(builder.addAttributesHandlerClass(MultipartRequestParameterResolver.class))
-                .thenReturn(builder);
+        when(builder.addAttributesHandlerClass(MultipartParameterResolver.class)).thenReturn(
+                builder);
 
         ModulesBuilder actual = config.prepare(builder);
 
         assertThat(actual, is(sameInstance(builder)));
 
-        verify(builder).setRequestContextFactoryClass(FileItemIteratorRequestContextFactory.class);
-        verify(builder).addAttributesHandlerClass(MultipartRequestParameterResolver.class);
+        verify(builder).addAttributesHandlerClass(MultipartParameterResolver.class);
     }
 
 }

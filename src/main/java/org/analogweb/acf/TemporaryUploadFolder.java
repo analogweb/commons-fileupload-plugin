@@ -11,7 +11,7 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.ApplicationProperties;
-import org.analogweb.MultipartFile;
+import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
 import org.analogweb.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
@@ -62,22 +62,22 @@ public class TemporaryUploadFolder implements Serializable {
         return this.baseDir;
     }
 
-    public File require(MultipartFile multipartFile) {
+    public File require(Multipart multipart) {
         File base = getBaseDir();
         if (!base.exists()) {
             base.mkdirs();
             log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000005", base.toString());
         }
-        File file = new File(base.getPath() + "/" + multipartFile.getParameterName());
+        File file = new File(base.getPath() + "/" + multipart.getName());
         if (!file.exists()) {
             FileOutputStream out = null;
-            InputStream in = multipartFile.getInputStream();
+            InputStream in = multipart.getInputStream();
             try {
                 out = new FileOutputStream(file);
                 IOUtils.copy(in, out);
                 log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000006", file.getPath());
             } catch (IOException e) {
-                log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000002", multipartFile.getParameterName());
+                log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000002", multipart.getName());
                 log.log(PLUGIN_MESSAGE_RESOURCE, "WACF000003", e, base);
                 return null;
             } finally {
@@ -90,8 +90,8 @@ public class TemporaryUploadFolder implements Serializable {
         return file;
     }
 
-    public static File require(RequestContext context, MultipartFile multipartFile) {
-        return current(context).require(multipartFile);
+    public static File require(RequestContext context, Multipart multipart) {
+        return current(context).require(multipart);
     }
 
     public void dispose() {

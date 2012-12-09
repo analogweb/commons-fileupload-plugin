@@ -19,7 +19,7 @@ import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
 import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
-import org.analogweb.MultipartFile;
+import org.analogweb.Multipart;
 import org.analogweb.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ApplicationPropertiesHolder.Creator;
@@ -37,7 +37,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     private TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
 
     private ServletRequestContext context;
-    private MultipartFile multipartFile;
+    private Multipart multipartFile;
 
     private Application app;
     private ApplicationProperties props;
@@ -47,7 +47,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     @Before
     public void setUp() {
         context = mock(ServletRequestContext.class);
-        multipartFile = mock(MultipartFile.class);
+        multipartFile = mock(Multipart.class);
         creator = mock(Creator.class);
         app = mock(Application.class);
         props = mock(ApplicationProperties.class);
@@ -62,6 +62,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     public void testRequire() throws Exception {
 
         when(context.getServletRequest()).thenReturn(request);
@@ -76,7 +77,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
 
-        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getName()).thenReturn("some");
         when(multipartFile.getInputStream()).thenReturn(
                 new ByteArrayInputStream("this is test!".getBytes()));
 

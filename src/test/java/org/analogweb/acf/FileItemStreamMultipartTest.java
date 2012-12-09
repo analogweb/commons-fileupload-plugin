@@ -10,16 +10,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.analogweb.acf.FileItemStreamMultipartFile;
-import org.analogweb.acf.FileUploadFailureException;
 import org.apache.commons.fileupload.FileItemStream;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class FileItemStreamMultipartFileTest {
+public class FileItemStreamMultipartTest {
 
-    private FileItemStreamMultipartFile file;
+    private FileItemStreamMultipart file;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -27,25 +25,25 @@ public class FileItemStreamMultipartFileTest {
     @Test
     public void testGetParameterName() {
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         when(item.getFieldName()).thenReturn("foo");
-        String actual = file.getParameterName();
+        String actual = file.getName();
         assertThat(actual, is("foo"));
     }
 
     @Test
     public void testGetFileName() {
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         when(item.getName()).thenReturn("foo.xml");
-        String actual = file.getFileName();
+        String actual = file.getResourceName();
         assertThat(actual, is("foo.xml"));
     }
 
     @Test
     public void testGetInputStream() throws Exception {
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         InputStream in = mock(InputStream.class);
         when(item.openStream()).thenReturn(in);
         InputStream actual = file.getInputStream();
@@ -56,7 +54,7 @@ public class FileItemStreamMultipartFileTest {
     public void testGetInputStreamAndThrowIOException() throws Exception {
         thrown.expect(FileUploadFailureException.class);
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         when(item.openStream()).thenThrow(new IOException());
         InputStream actual = file.getInputStream();
         assertNull(actual);
@@ -65,7 +63,7 @@ public class FileItemStreamMultipartFileTest {
     @Test
     public void testGetBytes() throws Exception {
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         InputStream in = new ByteArrayInputStream(new byte[] { 0x00, 0x01 });
         when(item.openStream()).thenReturn(in);
         byte[] actual = file.getBytes();
@@ -76,7 +74,7 @@ public class FileItemStreamMultipartFileTest {
     @Test
     public void testGetContentType() {
         FileItemStream item = mock(FileItemStream.class);
-        file = new FileItemStreamMultipartFile(item);
+        file = new FileItemStreamMultipart(item);
         when(item.getContentType()).thenReturn("application/xml");
         String actual = file.getContentType();
         assertThat(actual, is("application/xml"));

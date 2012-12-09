@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
-import org.analogweb.MultipartFile;
+import org.analogweb.Multipart;
 import org.analogweb.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ApplicationPropertiesHolder.Creator;
@@ -38,7 +38,7 @@ public class TemporaryUploadFolderTest {
     public TemporaryFolder folder = new TemporaryFolder();
 
     private ServletRequestContext context;
-    private MultipartFile multipartFile;
+    private Multipart multipartFile;
 
     private Application app;
     private ApplicationProperties props;
@@ -48,7 +48,7 @@ public class TemporaryUploadFolderTest {
     @Before
     public void setUp() {
         context = mock(ServletRequestContext.class);
-        multipartFile = mock(MultipartFile.class);
+        multipartFile = mock(Multipart.class);
         creator = mock(Creator.class);
         app = mock(Application.class);
         props = mock(ApplicationProperties.class);
@@ -63,6 +63,7 @@ public class TemporaryUploadFolderTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     public void testRequire() throws Exception {
 
         when(context.getServletRequest()).thenReturn(request);
@@ -77,7 +78,7 @@ public class TemporaryUploadFolderTest {
 
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
 
-        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getName()).thenReturn("some");
         when(multipartFile.getInputStream()).thenReturn(
                 new ByteArrayInputStream("this is test!".getBytes()));
 
@@ -90,6 +91,7 @@ public class TemporaryUploadFolderTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     public void testRequireSecond() throws Exception {
 
         when(context.getServletRequest()).thenReturn(request);
@@ -104,7 +106,7 @@ public class TemporaryUploadFolderTest {
 
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
 
-        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getName()).thenReturn("some");
         when(multipartFile.getInputStream()).thenReturn(
                 new ByteArrayInputStream("this is test!".getBytes()));
 
@@ -113,6 +115,7 @@ public class TemporaryUploadFolderTest {
     }
 
     @Test
+    @SuppressWarnings("resource")
     public void testSimplyRequire() throws Exception {
 
         when(context.getServletRequest()).thenReturn(request);
@@ -125,7 +128,7 @@ public class TemporaryUploadFolderTest {
         doNothing().when(request).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
                 isA(TemporaryUploadFolder.class));
 
-        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getName()).thenReturn("some");
         File from = folder.newFile("some.txt");
         FileWriter fw = new FileWriter(from);
         fw.write("this is test!");
@@ -152,7 +155,7 @@ public class TemporaryUploadFolderTest {
 
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
 
-        when(multipartFile.getParameterName()).thenReturn("some");
+        when(multipartFile.getName()).thenReturn("some");
         when(multipartFile.getInputStream()).thenReturn(new InputStream() {
             @Override
             public int read() throws IOException {
