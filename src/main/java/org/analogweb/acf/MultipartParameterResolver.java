@@ -144,6 +144,6 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
     }
 
     private boolean isEqualsType(Class<?> clazz, Class<?> clazz2) {
-        return clazz.getCanonicalName().equals(clazz2.getCanonicalName());
+        return (clazz == clazz2) || clazz.getCanonicalName().equals(clazz2.getCanonicalName());
     }
 }
