@@ -41,8 +41,7 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
         if (requestContext instanceof ServletRequestContext) {
             HttpServletRequest request = ((ServletRequestContext) requestContext)
                     .getServletRequest();
-            MultipartParameters<Multipart> parameters = CurrentMultipartParameters
-                    .get(request);
+            MultipartParameters<Multipart> parameters = CurrentMultipartParameters.get(request);
             if (parameters == null) {
                 if (isMultipartContentOnCurrentRequest(request)) {
                     log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000001");
@@ -123,7 +122,8 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
         List<FileItem> fileItems = fileUpload.parseRequest(context);
         log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000003", fileItems.size());
         FileItemIterator iterator = fileUpload.getItemIterator(context);
-        return (MultipartParameters<T>) new FileItemIteratorMultipartParameters(iterator, resolvedEncoding);
+        return (MultipartParameters<T>) new FileItemIteratorMultipartParameters(iterator,
+                resolvedEncoding);
     }
 
     protected org.apache.commons.fileupload.RequestContext createRequestContext(
@@ -145,5 +145,13 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
 
     private boolean isEqualsType(Class<?> clazz, Class<?> clazz2) {
         return (clazz == clazz2) || clazz.getCanonicalName().equals(clazz2.getCanonicalName());
+    }
+
+    public void setFileItemFactory(FileItemFactory fileItemFactory) {
+        this.fileItemFactory = fileItemFactory;
+    }
+
+    public void setFileUploadFactory(FileUploadFactory<? extends FileUpload> fileUploadFactory) {
+        this.fileUploadFactory = fileUploadFactory;
     }
 }
