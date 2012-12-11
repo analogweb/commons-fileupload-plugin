@@ -11,7 +11,7 @@ import org.analogweb.util.IOUtils;
 import org.apache.commons.fileupload.FileItemStream;
 
 /**
- * 内部的に{@link FileItemStream}を使用する{@link MultipartFile}の実装です。<br/>
+ * 内部的に{@link FileItemStream}を使用する{@link Multipart}の実装です。<br/>
  * @author snowgoose
  */
 public class FileItemStreamMultipart implements Multipart {

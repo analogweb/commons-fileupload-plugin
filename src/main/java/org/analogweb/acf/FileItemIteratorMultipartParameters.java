@@ -17,9 +17,9 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 
 /**
- * {@link FileItemIterator}を使用して、逐次的に{@link MultipartFile}を展開する
+ * {@link FileItemIterator}を使用して、逐次的に{@link org.analogweb.Multipart}を展開する
  * {@link MultipartParameters}の実装です。<br/>
- * {@link #iterator()}を使用することで、少ない消費リソースで{@link MultipartFile}
+ * {@link #iterator()}を使用することで、少ない消費リソースで{@link org.analogweb.Multipart}
  * を読み出すことが可能です。
  * @author snowgoose
  */
