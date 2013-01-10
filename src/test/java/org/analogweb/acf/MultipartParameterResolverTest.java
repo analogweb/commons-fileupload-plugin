@@ -21,7 +21,7 @@ import org.analogweb.InvocationMetadata;
 import org.analogweb.Multipart;
 import org.analogweb.Parameters;
 import org.analogweb.RequestContext;
-import org.analogweb.ServletRequestContext;
+import org.analogweb.servlet.ServletRequestContext;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;

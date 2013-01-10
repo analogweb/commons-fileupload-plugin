@@ -20,7 +20,7 @@ import org.analogweb.ApplicationProperties;
 import org.analogweb.InvocationArguments;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.Multipart;
-import org.analogweb.ServletRequestContext;
+import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ApplicationPropertiesHolder.Creator;
 import org.junit.After;

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.analogweb.ApplicationProperties;
 import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
-import org.analogweb.ServletRequestContext;
+import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.IOUtils;
 import org.analogweb.util.logging.Log;
