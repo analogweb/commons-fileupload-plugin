@@ -42,6 +42,7 @@ public class MultipartParameterResolverTest {
     private HttpServletRequest multipartRequest;
     private InvocationMetadata metadata;
     private Parameters params;
+    private Parameters empty;
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     @Rule
@@ -54,7 +55,9 @@ public class MultipartParameterResolverTest {
         multipartRequest = mock(HttpServletRequest.class);
         metadata = mock(InvocationMetadata.class);
         params = mock(Parameters.class);
-        when(context.getParameters()).thenReturn(params);
+        empty = mock(Parameters.class);
+        when(context.getFormParameters()).thenReturn(params);
+        when(context.getQueryParameters()).thenReturn(empty);
     }
 
     @Test
@@ -360,7 +363,7 @@ public class MultipartParameterResolverTest {
     public void testResolveAttributeWithoutServletRequestContext() {
         RequestContext requestContext = mock(RequestContext.class);
         Parameters params = mock(Parameters.class);
-        when(requestContext.getParameters()).thenReturn(params);
+        when(requestContext.getQueryParameters()).thenReturn(params);
         when(params.getValues("foo")).thenReturn(Arrays.asList("baa"));
         Object actual = resolver.resolveAttributeValue(requestContext, metadata, "foo",
                 Multipart.class);
