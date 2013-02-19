@@ -2,8 +2,7 @@ package org.analogweb.acf;
 
 import java.io.IOException;
 
-
-import org.analogweb.exception.ApplicationRuntimeException;
+import org.analogweb.core.ApplicationRuntimeException;
 import org.apache.commons.fileupload.FileUploadException;
 
 /**

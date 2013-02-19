@@ -1,6 +1,6 @@
 package org.analogweb.acf;
 
-import org.analogweb.exception.MissingRequiredParameterException;
+import org.analogweb.core.MissingRequiredParameterException;
 
 public class UnsupportedParameterTypeException extends MissingRequiredParameterException {
 
