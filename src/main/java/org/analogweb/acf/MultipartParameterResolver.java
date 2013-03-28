@@ -36,7 +36,7 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
             .getCanonicalName() + ".IS_MULTIPART_CONTENT";
 
     @Override
-    public Object resolveAttributeValue(RequestContext requestContext, InvocationMetadata metadata,
+    public Object resolveValue(RequestContext requestContext, InvocationMetadata metadata,
             String name, Class<?> requiredType) {
         if (requestContext instanceof ServletRequestContext) {
             HttpServletRequest request = ((ServletRequestContext) requestContext)
@@ -59,8 +59,7 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
                         throw new FileUploadFailureException(e);
                     }
                 } else {
-                    return super
-                            .resolveAttributeValue(requestContext, metadata, name, requiredType);
+                    return super.resolveValue(requestContext, metadata, name, requiredType);
                 }
             }
             if (isEqualsType(Iterable.class, requiredType)) {
@@ -92,7 +91,7 @@ public class MultipartParameterResolver extends ParameterScopeRequestAttributesR
                 }
             }
         }
-        return super.resolveAttributeValue(requestContext, metadata, name, requiredType);
+        return super.resolveValue(requestContext, metadata, name, requiredType);
     }
 
     protected boolean isMultipartContentOnCurrentRequest(HttpServletRequest request) {

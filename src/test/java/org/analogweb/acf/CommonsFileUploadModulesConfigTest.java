@@ -24,14 +24,10 @@ public class CommonsFileUploadModulesConfigTest {
 
     @Test
     public void testPrepare() {
-        when(builder.addAttributesHandlerClass(MultipartParameterResolver.class)).thenReturn(
+        when(builder.addRequestValueResolverClass(MultipartParameterResolver.class)).thenReturn(
                 builder);
-
         ModulesBuilder actual = config.prepare(builder);
-
         assertThat(actual, is(sameInstance(builder)));
-
-        verify(builder).addAttributesHandlerClass(MultipartParameterResolver.class);
+        verify(builder).addRequestValueResolverClass(MultipartParameterResolver.class);
     }
-
 }
