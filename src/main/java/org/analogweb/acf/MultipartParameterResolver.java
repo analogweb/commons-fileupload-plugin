@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
-import org.analogweb.core.ParameterScopeRequestAttributesResolver;
+import org.analogweb.core.ParameterValueResolver;
 import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ArrayUtils;
 import org.analogweb.util.StringUtils;
@@ -26,7 +26,7 @@ import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-public class MultipartParameterResolver extends ParameterScopeRequestAttributesResolver {
+public class MultipartParameterResolver extends ParameterValueResolver {
 
     private static final Log log = Logs.getLog(MultipartParameterResolver.class);
     private FileItemFactory fileItemFactory;
