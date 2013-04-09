@@ -17,9 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
-import org.analogweb.InvocationArguments;
-import org.analogweb.InvocationMetadata;
 import org.analogweb.Multipart;
+import org.analogweb.ResponseContext;
 import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ApplicationPropertiesHolder.Creator;
@@ -33,12 +32,10 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
     private TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
-
     private ServletRequestContext context;
+    private ResponseContext response;
     private Multipart multipartFile;
-
     private Application app;
     private ApplicationProperties props;
     private Creator creator;
@@ -47,6 +44,7 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     @Before
     public void setUp() {
         context = mock(ServletRequestContext.class);
+        response = mock(ResponseContext.class);
         multipartFile = mock(Multipart.class);
         creator = mock(Creator.class);
         app = mock(Application.class);
@@ -64,30 +62,21 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     @Test
     @SuppressWarnings("resource")
     public void testRequire() throws Exception {
-
         when(context.getServletRequest()).thenReturn(request);
-
         File testFolder = folder.newFolder("test1");
         when(props.getTempDir()).thenReturn(testFolder);
         when(request.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(null).thenReturn(
                 new TemporaryUploadFolder(testFolder));
-
         doNothing().when(request).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
                 isA(TemporaryUploadFolder.class));
-
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
-
         when(multipartFile.getName()).thenReturn("some");
         when(multipartFile.getInputStream()).thenReturn(
                 new ByteArrayInputStream("this is test!".getBytes()));
-
         File actual = file.require(multipartFile);
         assertThat(actual.exists(), is(true));
         assertThat(new BufferedReader(new FileReader(actual)).readLine(), is("this is test!"));
-
-        processor.afterCompletion(context, (InvocationArguments) null, (InvocationMetadata) null,
-                new Object());
-
+        processor.afterCompletion(context, response, null);
         assertThat(actual.exists(), is(false));
     }
 }

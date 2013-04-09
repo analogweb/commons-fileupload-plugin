@@ -1,19 +1,16 @@
 package org.analogweb.acf;
 
-import org.analogweb.InvocationArguments;
-import org.analogweb.InvocationMetadata;
 import org.analogweb.RequestContext;
-import org.analogweb.core.AbstractInvocationProcessor;
+import org.analogweb.ResponseContext;
+import org.analogweb.core.AbstractApplicationProcessor;
 
-public class TemporaryUploadFolderDisposeProcessor extends AbstractInvocationProcessor {
+public class TemporaryUploadFolderDisposeProcessor extends AbstractApplicationProcessor {
 
     @Override
-    public void afterCompletion(RequestContext request, InvocationArguments args,
-            InvocationMetadata metadata, Object invocationResult) {
+    public void afterCompletion(RequestContext request, ResponseContext response, Exception e) {
         TemporaryUploadFolder tmp = TemporaryUploadFolder.current(request);
         if (tmp != null) {
             tmp.dispose();
         }
     }
-
 }
