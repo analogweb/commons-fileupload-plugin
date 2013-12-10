@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.analogweb.Multipart;
 import org.analogweb.Parameters;
 import org.analogweb.RequestContext;
 import org.analogweb.servlet.ServletRequestContext;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -96,10 +98,10 @@ public class MultipartParameterResolverTest {
         FileUpload fileUpload = new FileUpload() {
 
             @Override
-            public List<?> parseRequest(org.apache.commons.fileupload.RequestContext ctx)
+            public List<FileItem> parseRequest(org.apache.commons.fileupload.RequestContext ctx)
                     throws FileUploadException {
                 // TODO Auto-generated method stub
-                return items;
+                return Collections.emptyList();
             }
 
             @Override
