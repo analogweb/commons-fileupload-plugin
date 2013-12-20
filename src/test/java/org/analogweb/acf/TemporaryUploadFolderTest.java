@@ -25,7 +25,6 @@ import org.analogweb.ApplicationProperties;
 import org.analogweb.Multipart;
 import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
-import org.analogweb.util.ApplicationPropertiesHolder.Creator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -42,18 +41,15 @@ public class TemporaryUploadFolderTest {
 
     private Application app;
     private ApplicationProperties props;
-    private Creator creator;
     private HttpServletRequest request;
 
     @Before
     public void setUp() {
         context = mock(ServletRequestContext.class);
         multipartFile = mock(Multipart.class);
-        creator = mock(Creator.class);
         app = mock(Application.class);
         props = mock(ApplicationProperties.class);
-        when(creator.create()).thenReturn(props);
-        ApplicationPropertiesHolder.configure(app, creator);
+        ApplicationPropertiesHolder.configure(app, props);
         request = mock(HttpServletRequest.class);
     }
 

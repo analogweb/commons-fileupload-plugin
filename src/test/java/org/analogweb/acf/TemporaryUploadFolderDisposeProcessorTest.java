@@ -21,7 +21,6 @@ import org.analogweb.Multipart;
 import org.analogweb.ResponseContext;
 import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
-import org.analogweb.util.ApplicationPropertiesHolder.Creator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,13 +31,12 @@ public class TemporaryUploadFolderDisposeProcessorTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    private TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
+    private final TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
     private ServletRequestContext context;
     private ResponseContext response;
     private Multipart multipartFile;
     private Application app;
     private ApplicationProperties props;
-    private Creator creator;
     private HttpServletRequest request;
 
     @Before
@@ -46,11 +44,9 @@ public class TemporaryUploadFolderDisposeProcessorTest {
         context = mock(ServletRequestContext.class);
         response = mock(ResponseContext.class);
         multipartFile = mock(Multipart.class);
-        creator = mock(Creator.class);
         app = mock(Application.class);
         props = mock(ApplicationProperties.class);
-        when(creator.create()).thenReturn(props);
-        ApplicationPropertiesHolder.configure(app, creator);
+        ApplicationPropertiesHolder.configure(app, props);
         request = mock(HttpServletRequest.class);
     }
 
