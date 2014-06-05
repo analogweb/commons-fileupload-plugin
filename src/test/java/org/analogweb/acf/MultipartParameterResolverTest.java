@@ -69,7 +69,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(MultipartParameterResolver.KEY_IS_MULTIPART_CONTENT))
                 .thenReturn(Boolean.FALSE);
         when(params.getValues("foo")).thenReturn(Arrays.asList("baa"));
-        Object actual = resolver.resolveValue(context, metadata, "foo", String.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", String.class, null);
         assertThat((String) actual, is("baa"));
     }
 
@@ -80,7 +80,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(MultipartParameterResolver.KEY_IS_MULTIPART_CONTENT))
                 .thenReturn(Boolean.FALSE);
         when(params.getValues("foo")).thenReturn(Arrays.asList(expected));
-        Object actual = resolver.resolveValue(context, metadata, "foo", String[].class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", String[].class, null);
         assertThat((String[]) actual, is(expected));
     }
 
@@ -131,7 +131,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getContentType()).thenReturn("multipart/form-data");
         when(multipartRequest.getCharacterEncoding()).thenReturn("Shift-JIS");
         when(multipartRequest.getMethod()).thenReturn("POST");
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class, null);
         Multipart actualMultipart = (Multipart) actual;
         assertThat(actualMultipart.getName(), is("foo"));
     }
@@ -145,7 +145,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
                 params);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file });
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class, null);
         assertThat((Multipart) actual, is(file));
     }
 
@@ -159,7 +159,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
                 params);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart[].class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart[].class, null);
         Multipart[] actualFiles = (Multipart[]) actual;
         assertThat(actualFiles[0], is(file));
         assertThat(actualFiles[1], is(file2));
@@ -175,7 +175,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
                 params);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class, null);
         Multipart actualFiles = (Multipart) actual;
         assertThat(actualFiles, is(file));
     }
@@ -197,7 +197,7 @@ public class MultipartParameterResolverTest {
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
         when(multipartRequest.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(
                 new TemporaryUploadFolder(folder.newFolder()));
-        Object actual = resolver.resolveValue(context, metadata, "foo", File[].class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", File[].class, null);
         File[] actualFiles = (File[]) actual;
         assertThat(fileToString(actualFiles[0]), is("Hello file!"));
         assertThat(fileToString(actualFiles[1]), is("Hello file2!"));
@@ -221,7 +221,7 @@ public class MultipartParameterResolverTest {
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
         when(multipartRequest.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(
                 new TemporaryUploadFolder(folder.newFolder()));
-        Object actual = resolver.resolveValue(context, metadata, "foo", File.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", File.class, null);
         File actualFiles = (File) actual;
         assertThat(fileToString(actualFiles), is("Hello file!"));
     }
@@ -243,7 +243,7 @@ public class MultipartParameterResolverTest {
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
         when(multipartRequest.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(
                 new TemporaryUploadFolder(folder.newFolder()));
-        Object actual = resolver.resolveValue(context, metadata, "foo", InputStream.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", InputStream.class, null);
         InputStream actualFiles = (InputStream) actual;
         StringBuilder buffer = new StringBuilder();
         int i = 0;
@@ -270,7 +270,7 @@ public class MultipartParameterResolverTest {
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
         when(multipartRequest.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(
                 new TemporaryUploadFolder(folder.newFolder()));
-        Object actual = resolver.resolveValue(context, metadata, "foo", byte[].class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", byte[].class, null);
         byte[] actualFiles = (byte[]) actual;
         assertThat(new String(actualFiles), is("Hello file!"));
     }
@@ -294,7 +294,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
                 params);
         when(params.getMultiparts("foo")).thenReturn(null);
-        Object actual = resolver.resolveValue(context, metadata, "foo", String.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", String.class, null);
         assertNull(actual);
     }
 
@@ -305,7 +305,7 @@ public class MultipartParameterResolverTest {
         when(multipartRequest.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
                 params);
         when(context.getServletRequest()).thenReturn(multipartRequest);
-        Object actual = resolver.resolveValue(context, metadata, "", Iterable.class);
+        Object actual = resolver.resolveValue(context, metadata, "", Iterable.class, null);
         assertThat((MultipartParameters) actual, is(params));
     }
 
@@ -318,7 +318,7 @@ public class MultipartParameterResolverTest {
         when(context.getServletRequest()).thenReturn(multipartRequest);
         Multipart multipart = mock(Multipart.class);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { multipart });
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class, null);
         assertThat((Multipart) actual, is(multipart));
     }
 
@@ -330,7 +330,7 @@ public class MultipartParameterResolverTest {
                 params);
         when(context.getServletRequest()).thenReturn(multipartRequest);
         when(params.getMultiparts("foo")).thenReturn(null);
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart.class, null);
         assertNull(actual);
     }
 
@@ -340,7 +340,7 @@ public class MultipartParameterResolverTest {
         Parameters params = mock(Parameters.class);
         when(requestContext.getQueryParameters()).thenReturn(params);
         when(params.getValues("foo")).thenReturn(Arrays.asList("baa"));
-        Object actual = resolver.resolveValue(requestContext, metadata, "foo", Multipart.class);
+        Object actual = resolver.resolveValue(requestContext, metadata, "foo", Multipart.class, null);
         assertThat(actual.toString(), is("baa"));
     }
 
@@ -372,7 +372,7 @@ public class MultipartParameterResolverTest {
         when(context.getServletRequest()).thenReturn(multipartRequest);
         Multipart multipart = mock(Multipart.class);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { multipart });
-        Object actual = resolver.resolveValue(context, metadata, "foo", InputStream[].class);
+        Object actual = resolver.resolveValue(context, metadata, "foo", InputStream[].class, null);
         assertThat((Multipart) actual, is(multipart));
     }
 }

@@ -5,6 +5,7 @@ import static org.analogweb.acf.CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RE
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 
     @Override
     public Object resolveValue(RequestContext requestContext, InvocationMetadata metadata,
-            String name, Class<?> requiredType) {
+            String name, Class<?> requiredType,Annotation[] annotations) {
         if (requestContext instanceof ServletRequestContext) {
             HttpServletRequest request = ((ServletRequestContext) requestContext)
                     .getServletRequest();
@@ -59,7 +60,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
                         throw new FileUploadFailureException(e);
                     }
                 } else {
-                    return super.resolveValue(requestContext, metadata, name, requiredType);
+                    return super.resolveValue(requestContext, metadata, name, requiredType,annotations);
                 }
             }
             if (isEqualsType(Iterable.class, requiredType)) {
@@ -91,7 +92,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
                 }
             }
         }
-        return super.resolveValue(requestContext, metadata, name, requiredType);
+        return super.resolveValue(requestContext, metadata, name, requiredType, annotations);
     }
 
     protected boolean isMultipartContentOnCurrentRequest(HttpServletRequest request) {
