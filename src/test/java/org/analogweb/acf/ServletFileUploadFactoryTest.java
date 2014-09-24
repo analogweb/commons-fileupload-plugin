@@ -4,16 +4,16 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
-import org.analogweb.acf.ServletFileUploadFactory;
+import org.analogweb.acf.DefaultFileUploadFactory;
 import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.ProgressListener;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServletFileUploadFactoryTest {
     
-    private ServletFileUploadFactory factory;
+    private DefaultFileUploadFactory factory;
     private FileItemFactory fileItemFactory;
     private ProgressListener progressListener;
 
@@ -25,13 +25,13 @@ public class ServletFileUploadFactoryTest {
 
     @Test
     public void testCreateFileUpload() {
-        factory = new ServletFileUploadFactory();
+        factory = new DefaultFileUploadFactory();
         factory.setFileSizeMax(1000L);
         factory.setHeaderEncoding("UTF-8");
         factory.setListener(progressListener);
         factory.setSizeMax(2000);
         
-        ServletFileUpload actual = factory.createFileUpload(fileItemFactory);
+        FileUpload actual = factory.createFileUpload(fileItemFactory);
         assertThat(actual.getFileSizeMax(),is(1000L));
         assertThat(actual.getHeaderEncoding(),is("UTF-8"));
         assertThat(actual.getProgressListener(),is(progressListener));
@@ -40,13 +40,13 @@ public class ServletFileUploadFactoryTest {
 
     @Test
     public void testCreateFileUploadWithoutFileItemFactory() {
-        factory = new ServletFileUploadFactory();
+        factory = new DefaultFileUploadFactory();
         factory.setFileSizeMax(2000L);
         factory.setHeaderEncoding("Shift-JIS");
         factory.setListener(progressListener);
         factory.setSizeMax(3000);
 
-        ServletFileUpload actual = factory.createFileUpload();
+        FileUpload actual = factory.createFileUpload();
         assertThat(actual.getFileSizeMax(),is(2000L));
         assertThat(actual.getHeaderEncoding(),is("Shift-JIS"));
         assertThat(actual.getProgressListener(),is(progressListener));

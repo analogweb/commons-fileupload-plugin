@@ -8,12 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.analogweb.ApplicationProperties;
 import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
-import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.IOUtils;
 import org.analogweb.util.logging.Log;
@@ -30,20 +27,14 @@ public class TemporaryUploadFolder implements Serializable {
 
     private File baseDir;
 
-    public static TemporaryUploadFolder current(RequestContext context) {
-        HttpServletRequest req;
-        if (context instanceof ServletRequestContext) {
-            req = ((ServletRequestContext) context).getServletRequest();
-        } else {
-            return null;
-        }
-        Object tmpDir = req.getAttribute(TMP_DIR);
+    public static TemporaryUploadFolder current(RequestContext request) {
+        Object tmpDir = request.getAttribute(TMP_DIR);
         if (!(tmpDir instanceof TemporaryUploadFolder)) {
             ApplicationProperties props = ApplicationPropertiesHolder.current();
             TemporaryUploadFolder newFolder = new TemporaryUploadFolder(new File(
-                    createCurrentDirName(props, context)));
-            req.setAttribute(TMP_DIR, newFolder);
-            tmpDir = req.getAttribute(TMP_DIR);
+                    createCurrentDirName(props, request)));
+            request.setAttribute(TMP_DIR, newFolder);
+            tmpDir = request.getAttribute(TMP_DIR);
         }
         return (TemporaryUploadFolder) tmpDir;
     }

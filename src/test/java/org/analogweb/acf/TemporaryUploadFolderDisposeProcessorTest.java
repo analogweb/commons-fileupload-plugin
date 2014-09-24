@@ -13,13 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.analogweb.Application;
 import org.analogweb.ApplicationProperties;
 import org.analogweb.Multipart;
+import org.analogweb.RequestContext;
 import org.analogweb.ResponseContext;
-import org.analogweb.servlet.ServletRequestContext;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.junit.After;
 import org.junit.Before;
@@ -32,22 +30,20 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private final TemporaryUploadFolderDisposeProcessor processor = new TemporaryUploadFolderDisposeProcessor();
-    private ServletRequestContext context;
+    private RequestContext context;
     private ResponseContext response;
     private Multipart multipartFile;
     private Application app;
     private ApplicationProperties props;
-    private HttpServletRequest request;
 
     @Before
     public void setUp() {
-        context = mock(ServletRequestContext.class);
+        context = mock(RequestContext.class);
         response = mock(ResponseContext.class);
         multipartFile = mock(Multipart.class);
         app = mock(Application.class);
         props = mock(ApplicationProperties.class);
         ApplicationPropertiesHolder.configure(app, props);
-        request = mock(HttpServletRequest.class);
     }
 
     @After
@@ -58,12 +54,11 @@ public class TemporaryUploadFolderDisposeProcessorTest {
     @Test
     @SuppressWarnings("resource")
     public void testRequire() throws Exception {
-        when(context.getServletRequest()).thenReturn(request);
         File testFolder = folder.newFolder("test1");
         when(props.getTempDir()).thenReturn(testFolder);
-        when(request.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(null).thenReturn(
+        when(context.getAttribute(TemporaryUploadFolder.TMP_DIR)).thenReturn(null).thenReturn(
                 new TemporaryUploadFolder(testFolder));
-        doNothing().when(request).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
+        doNothing().when(context).setAttribute(eq(TemporaryUploadFolder.TMP_DIR),
                 isA(TemporaryUploadFolder.class));
         TemporaryUploadFolder file = TemporaryUploadFolder.current(context);
         when(multipartFile.getName()).thenReturn("some");

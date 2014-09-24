@@ -1,15 +1,14 @@
 package org.analogweb.acf;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.analogweb.Multipart;
+import org.analogweb.RequestContext;
 
 class CurrentMultipartParameters {
 
     static final String ATTRIBUTE_NAME = CurrentMultipartParameters.class.getCanonicalName() + "";
 
     @SuppressWarnings("unchecked")
-    static <T extends Multipart> MultipartParameters<T> get(HttpServletRequest request) {
+    static <T extends Multipart> MultipartParameters<T> get(RequestContext request) {
         Object value = request.getAttribute(ATTRIBUTE_NAME);
         if (value instanceof MultipartParameters) {
             return (MultipartParameters<T>) value;
@@ -17,12 +16,12 @@ class CurrentMultipartParameters {
         return null;
     }
 
-    static <T extends Multipart> void put(HttpServletRequest request, MultipartParameters<T> params) {
+    static <T extends Multipart> void put(RequestContext request, MultipartParameters<T> params) {
         request.setAttribute(ATTRIBUTE_NAME, params);
     }
 
-    static void dispose(HttpServletRequest request) {
-        request.removeAttribute(ATTRIBUTE_NAME);
+    static void dispose(RequestContext request) {
+        request.setAttribute(ATTRIBUTE_NAME,null);
     }
 
 }

@@ -3,13 +3,12 @@ package org.analogweb.acf;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.ProgressListener;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
- * {@link ServletFileUpload}のインスタンスを生成する{@link FileUploadFactory}の実装です。
+ * {@link FileUpload}のインスタンスを生成する{@link FileUploadFactory}の実装です。
  * @author snowgoose
  */
-public class ServletFileUploadFactory implements FileUploadFactory<ServletFileUpload> {
+public class DefaultFileUploadFactory implements FileUploadFactory<FileUpload> {
 
     private long sizeMax = -1;
     private long fileSizeMax = -1;
@@ -17,15 +16,15 @@ public class ServletFileUploadFactory implements FileUploadFactory<ServletFileUp
     private ProgressListener listener;
 
     @Override
-    public ServletFileUpload createFileUpload() {
-        ServletFileUpload upload = new ServletFileUpload();
+    public FileUpload createFileUpload() {
+        FileUpload upload = new FileUpload();
         setUpFileUpload(upload);
         return upload;
     }
 
     @Override
-    public ServletFileUpload createFileUpload(FileItemFactory fileItemFactory) {
-        ServletFileUpload upload = new ServletFileUpload(fileItemFactory);
+    public FileUpload createFileUpload(FileItemFactory fileItemFactory) {
+        FileUpload upload = new FileUpload(fileItemFactory);
         setUpFileUpload(upload);
         return upload;
     }
