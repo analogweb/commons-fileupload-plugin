@@ -15,6 +15,7 @@ import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
 import org.analogweb.core.ParameterValueResolver;
 import org.analogweb.util.ArrayUtils;
+import org.analogweb.util.ClassUtils;
 import org.analogweb.util.StringUtils;
 import org.analogweb.util.logging.Log;
 import org.analogweb.util.logging.Logs;
@@ -61,24 +62,22 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 						requiredType, annotations);
 			}
 		}
-		// TODO trace log.
-		System.out.println(requiredType + ": "+ parameters + ": "+ name);
+		log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000009",
+				new Object[] { parameters,name,requiredType });
 		if (isEqualsType(Iterable.class, requiredType)) {
-			// TODO trace log.
-			System.out.println("Return as Iterable.");
 			return parameters;
 		}
 		Multipart[] value = parameters.getMultiparts(name);
 		if (ArrayUtils.isNotEmpty(value)) {
 			log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name,
 					value });
-			if (isEqualsType(File[].class, requiredType)) {
+			if (isEqualsType(ClassUtils.forNameQuietly("[L"+File.class.getName()+";"), requiredType)) {
 				List<File> files = new ArrayList<File>();
 				for (Multipart mp : value) {
 					files.add(TemporaryUploadFolder.require(request, mp));
 				}
 				return files.toArray(new File[files.size()]);
-			} else if (isEqualsType(Multipart[].class, requiredType)) {
+			} else if (isEqualsType(ClassUtils.forNameQuietly("[L"+Multipart.class.getName()+";"), requiredType)) {
 				return value;
 			}
 			Multipart mp = value[0];
@@ -151,10 +150,12 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 		}
 	}
 
-	private boolean isEqualsType(Class<?> clazz, Class<?> clazz2) {
-		// FIXME Check array and assignable.
-		return (clazz == clazz2)
-				|| clazz.getCanonicalName().equals(clazz2.getCanonicalName());
+	private boolean isEqualsType(Class<?> clazz, Class<?> other) {
+		if(clazz == null || other == null){
+			return false;
+		}
+		return (clazz == other)
+				|| clazz.getCanonicalName().equals(other.getCanonicalName());
 	}
 
 	public void setFileItemFactory(FileItemFactory fileItemFactory) {
