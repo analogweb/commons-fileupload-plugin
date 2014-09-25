@@ -20,15 +20,15 @@ import org.analogweb.util.logging.Log;
 import org.analogweb.util.logging.Logs;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 public class MultipartParameterResolver extends ParameterValueResolver {
 
 	private static final Log log = Logs
 			.getLog(MultipartParameterResolver.class);
-	private FileItemFactory fileItemFactory;
+	private FileItemFactory fileItemFactory = createFileItemFactory();
 	private FileUploadFactory<? extends FileUpload> fileUploadFactory = new DefaultFileUploadFactory();
 	private final String defaultEncoding = "UTF-8";
 
@@ -61,7 +61,11 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 						requiredType, annotations);
 			}
 		}
+		// TODO trace log.
+		System.out.println(requiredType + ": "+ parameters + ": "+ name);
 		if (isEqualsType(Iterable.class, requiredType)) {
+			// TODO trace log.
+			System.out.println("Return as Iterable.");
 			return parameters;
 		}
 		Multipart[] value = parameters.getMultiparts(name);
@@ -123,9 +127,8 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 			throws FileUploadException, IOException {
 		List<FileItem> fileItems = fileUpload.parseRequest(context);
 		log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000003", fileItems.size());
-		FileItemIterator iterator = fileUpload.getItemIterator(context);
-		return (MultipartParameters<T>) new FileItemIteratorMultipartParameters(
-				iterator, resolvedEncoding);
+		return (MultipartParameters<T>) new FileItemMultipartParameters(
+				fileItems, resolvedEncoding);
 	}
 
 	protected org.apache.commons.fileupload.RequestContext createRequestContext(
@@ -137,6 +140,9 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 		return this.fileItemFactory;
 	}
 
+	protected FileItemFactory createFileItemFactory() {
+		return new DiskFileItemFactory();
+	}
 	protected FileUpload getFileUpload(FileItemFactory fileItemFactory) {
 		if (fileItemFactory != null) {
 			return fileUploadFactory.createFileUpload(fileItemFactory);
@@ -146,6 +152,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 	}
 
 	private boolean isEqualsType(Class<?> clazz, Class<?> clazz2) {
+		// FIXME Check array and assignable.
 		return (clazz == clazz2)
 				|| clazz.getCanonicalName().equals(clazz2.getCanonicalName());
 	}

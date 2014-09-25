@@ -12,8 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.analogweb.InvocationMetadata;
@@ -24,7 +22,6 @@ import org.analogweb.core.MediaTypes;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemIterator;
-import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.hamcrest.BaseMatcher;
@@ -82,36 +79,23 @@ public class MultipartParameterResolverTest {
         resolver.setFileItemFactory(fileItemFactory);
         @SuppressWarnings("unchecked")
         FileUploadFactory<FileUpload> fileUploadFactory = mock(FileUploadFactory.class);
-        FileItemStream item1 = mock(FileItemStream.class);
+        FileItem item1 = mock(FileItem.class);
         when(item1.getFieldName()).thenReturn("baa");
-        FileItemStream item2 = mock(FileItemStream.class);
+        FileItem item2 = mock(FileItem.class);
         when(item2.getFieldName()).thenReturn("foo");
-        final List<FileItemStream> items = Arrays.asList(item1, item2);
+        final List<FileItem> items = Arrays.asList(item1, item2);
         FileUpload fileUpload = new FileUpload() {
 
             @Override
             public List<FileItem> parseRequest(org.apache.commons.fileupload.RequestContext ctx)
                     throws FileUploadException {
-                return Collections.emptyList();
+                return items;
             }
 
             @Override
             public FileItemIterator getItemIterator(org.apache.commons.fileupload.RequestContext ctx)
                     throws FileUploadException, IOException {
-                return new FileItemIterator() {
-
-                    Iterator<FileItemStream> i = items.iterator();
-
-                    @Override
-                    public FileItemStream next() throws FileUploadException, IOException {
-                        return i.next();
-                    }
-
-                    @Override
-                    public boolean hasNext() throws FileUploadException, IOException {
-                        return i.hasNext();
-                    }
-                };
+                return null;
             }
         };
         when(fileUploadFactory.createFileUpload(fileItemFactory)).thenReturn(fileUpload);
