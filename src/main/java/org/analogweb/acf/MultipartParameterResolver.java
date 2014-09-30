@@ -58,6 +58,8 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 					throw new FileUploadFailureException(e);
 				}
 			} else {
+				log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000009",
+						new Object[] { request.getContentType()});
 				return super.resolveValue(request, metadata, name,
 						requiredType, annotations);
 			}
