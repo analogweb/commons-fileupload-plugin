@@ -18,7 +18,7 @@ import org.analogweb.util.StringUtils;
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
 @Resolver(MultipartParameterResolver.class)
 @Valiables
-public @interface Multipart {
+public @interface MultipartParam {
 
 	String value() default StringUtils.EMPTY;
 }
