@@ -2,7 +2,7 @@ Analog Web Framework Commons File Upload Plugin
 ===============================================
 
 Enable uploading file to Analogweb's routing endpoint.
-(*No needs Servlet API.*)
+(*Do NOT needs Servlet API.*)
 
 Example In Scala
 =================
