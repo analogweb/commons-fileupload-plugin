@@ -23,13 +23,13 @@ import org.apache.commons.fileupload.FileUploadException;
  * を読み出すことが可能です。
  * @author snowgoose
  */
-public class FileItemIteratorMultipartParameters implements MultipartParameters<FileItemStreamMultipart> {
+public class FileItemStreamMultipartParameters implements MultipartParameters<FileItemStreamMultipart> {
 
-    private static final Log log = Logs.getLog(FileItemIteratorMultipartParameters.class);
+    private static final Log log = Logs.getLog(FileItemStreamMultipartParameters.class);
     private final FileItemIterator iterator;
     private final String resolvedEncoding;
 
-    public FileItemIteratorMultipartParameters(FileItemIterator iterator, String encoding) {
+    public FileItemStreamMultipartParameters(FileItemIterator iterator, String encoding) {
         this.iterator = iterator;
         this.resolvedEncoding = encoding;
     }

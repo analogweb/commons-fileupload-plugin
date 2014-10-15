@@ -22,9 +22,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class FileItemIteratorMultipartParametersTest {
+public class FileItemStreamMultipartParametersTest {
 
-    private FileItemIteratorMultipartParameters parameters;
+    private FileItemStreamMultipartParameters parameters;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -93,7 +93,7 @@ public class FileItemIteratorMultipartParametersTest {
         when(file4.openStream()).thenReturn(
                 new ByteArrayInputStream(new byte[] { 0x30, 0x31, 0x32 }));
 
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         Iterator<FileItemStreamMultipart> actual = parameters.iterator();
 
         assertTrue(actual.hasNext());
@@ -146,7 +146,7 @@ public class FileItemIteratorMultipartParametersTest {
         thrown.expect(FileUploadFailureException.class);
         FileItemIterator iterator = mock(FileItemIterator.class);
         when(iterator.hasNext()).thenThrow(new IOException());
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         parameters.iterator().hasNext();
     }
 
@@ -155,7 +155,7 @@ public class FileItemIteratorMultipartParametersTest {
         thrown.expect(UnsupportedOperationException.class);
         FileItemIterator iterator = mock(FileItemIterator.class);
         when(iterator.hasNext()).thenThrow(new IOException());
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         parameters.iterator().remove();
     }
 
@@ -164,7 +164,7 @@ public class FileItemIteratorMultipartParametersTest {
         thrown.expect(FileUploadFailureException.class);
         FileItemIterator iterator = mock(FileItemIterator.class);
         when(iterator.next()).thenThrow(new IOException());
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         parameters.iterator().next();
     }
 
@@ -173,7 +173,7 @@ public class FileItemIteratorMultipartParametersTest {
         thrown.expect(FileUploadFailureException.class);
         FileItemIterator iterator = mock(FileItemIterator.class);
         when(iterator.hasNext()).thenThrow(new FileUploadException());
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         parameters.iterator().hasNext();
     }
 
@@ -182,7 +182,7 @@ public class FileItemIteratorMultipartParametersTest {
         thrown.expect(FileUploadFailureException.class);
         FileItemIterator iterator = mock(FileItemIterator.class);
         when(iterator.next()).thenThrow(new FileUploadException());
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         parameters.iterator().next();
     }
 
@@ -221,7 +221,7 @@ public class FileItemIteratorMultipartParametersTest {
         when(param3.getFieldName()).thenReturn("baa");
         when(param3.openStream()).thenReturn(new ByteArrayInputStream("boo".getBytes()));
 
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         String[] actual = parameters.getParameter("baa");
 
         assertThat(actual.length, is(2));
@@ -265,7 +265,7 @@ public class FileItemIteratorMultipartParametersTest {
         when(param1.getFieldName()).thenReturn("baa");
         when(param1.openStream()).thenReturn(new ByteArrayInputStream("hoge".getBytes()));
 
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UnknownEncoding");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UnknownEncoding");
         parameters.getParameter("baa");
     }
 
@@ -306,7 +306,7 @@ public class FileItemIteratorMultipartParametersTest {
         when(file3.openStream()).thenReturn(
                 new ByteArrayInputStream(new byte[] { 0x30, 0x31, 0x32 }));
 
-        parameters = new FileItemIteratorMultipartParameters(iterator, "UTF-8");
+        parameters = new FileItemStreamMultipartParameters(iterator, "UTF-8");
         Multipart[] actual = parameters.getMultiparts("foo");
 
         assertThat(actual.length, is(2));
