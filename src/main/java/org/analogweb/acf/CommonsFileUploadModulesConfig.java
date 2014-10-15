@@ -25,6 +25,7 @@ public class CommonsFileUploadModulesConfig implements PluginModulesConfig {
         log.log(PLUGIN_MESSAGE_RESOURCE, "IACF000001");
         builder.addApplicationProcessorClass(TemporaryUploadFolderDisposeProcessor.class);
         builder.addRequestValueResolverClass(MultipartParameterResolver.class);
+        builder.addRequestValueResolverClass(MultipartParameterStreamResolver.class);
         return builder;
     }
 }
