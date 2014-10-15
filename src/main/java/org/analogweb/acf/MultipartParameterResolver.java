@@ -69,6 +69,13 @@ public class MultipartParameterResolver extends ParameterValueResolver {
 		if (isEqualsType(Iterable.class, requiredType)) {
 			return parameters;
 		}
+		return resolveParameterizedValue(request, metadata, name, requiredType,
+				annotations, parameters);
+	}
+
+	protected Object resolveParameterizedValue(RequestContext request,
+			InvocationMetadata metadata, String name, Class<?> requiredType,
+			Annotation[] annotations, MultipartParameters<Multipart> parameters) {
 		Multipart[] value = parameters.getMultiparts(name);
 		if (ArrayUtils.isNotEmpty(value)) {
 			log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name,
