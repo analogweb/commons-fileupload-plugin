@@ -1,6 +1,5 @@
 package org.analogweb.acf;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -11,10 +10,12 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.analogweb.InvocationMetadata;
+import org.analogweb.MediaType;
 import org.analogweb.Multipart;
 import org.analogweb.Parameters;
 import org.analogweb.RequestContext;
 import org.analogweb.core.MediaTypes;
+import org.analogweb.util.IOUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Before;
@@ -95,16 +96,21 @@ public class MultipartParameterStreamResolverTest {
 	@Test
     public void testResolveAttributeMultipartNotAvairableParameters() throws Exception {
         when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(null);
-        when(context.getContentType()).thenReturn(MediaTypes.valueOf("multipart/form-data; boundary=------------------------------4ebf00fbcf09"));
-        when(context.getRequestBody()).thenReturn(new ByteArrayInputStream(new String(""
-+"------------------------------4ebf00fbcf09\r\n"
-+"Content-Disposition: form-data; name='example'\r\n"
-+"\r\n"
-+"test\r\n"
-+"------------------------------4ebf00fbcf09--\r\n").getBytes()));
+        when(context.getContentLength()).thenReturn(199L);
+        MediaType mt = MediaTypes.valueOf("multipart/form-data; boundary=------------------------------4ebf00fbcf09");
+        when(context.getContentType()).thenReturn(mt);
+        byte[] part = new StringBuilder()
+        .append("--------------------------------4ebf00fbcf09\r\n")
+        .append("Content-Disposition: form-data; name=\"example\"\r\n")
+        .append("Content-Type: text/plain\r\n")
+        .append("\r\n")
+        .append("test\r\n")
+        .append("--------------------------------4ebf00fbcf09--\r\n").toString().getBytes();
+        when(context.getRequestBody()).thenReturn(new ByteArrayInputStream(part));
         Iterable<Multipart> actual = (Iterable<Multipart>) resolver.resolveValue(context, metadata, "", Iterable.class, null);
-        // TODO:Verify boundary data.
-        assertThat(actual, is(notNullValue()));
+        Multipart actualPart = actual.iterator().next();
+        assertThat(actualPart.getName(), is("example"));
+        assertThat(IOUtils.toString(actualPart.getInputStream()), is("test"));
     }
 
     @Test
