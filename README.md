@@ -2,10 +2,18 @@ Analog Web Framework Commons File Upload Plugin
 ===============================================
 
 Enable uploading file to Analogweb's routing endpoint.
-(*Do NOT needs Servlet API.*)
+(*NOT needs Servlet API.*)
 
 Example In Scala
 =================
+
+Add SBT dependency.([scala-plugin](https://github.com/analogweb/scala-plugin) includes this plugin on dependency.)
+
+```scala
+val scalaplugin = "org.analogweb" %% "analogweb-scala" % "0.9.2-SNAPSHOT"
+```
+
+Write them.
 
 ```scala
 import org.analogweb.core.httpserver.HttpServers
@@ -33,7 +41,7 @@ Add Maven dependency.
 <dependency>
  <groupId>org.analogweb</groupId>
  <artifactId>analogweb-commons-fileupload</artifactId>
- <version>0.9.1-SNAPSHOT</version>
+ <version>0.9.2-SNAPSHOT</version>
 </dependency>
 ```
 
