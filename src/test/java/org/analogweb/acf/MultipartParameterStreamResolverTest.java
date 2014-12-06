@@ -9,15 +9,19 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import org.analogweb.Application;
 import org.analogweb.InvocationMetadata;
 import org.analogweb.MediaType;
 import org.analogweb.Multipart;
 import org.analogweb.Parameters;
 import org.analogweb.RequestContext;
+import org.analogweb.core.DefaultApplicationProperties;
 import org.analogweb.core.MediaTypes;
+import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.IOUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +42,7 @@ public class MultipartParameterStreamResolverTest {
 
     @Before
     public void setUp() throws Exception {
+        ApplicationPropertiesHolder.configure(mock(Application.class), DefaultApplicationProperties.defaultProperties());
         resolver = new MultipartParameterStreamResolver();
         context = mock(RequestContext.class);
         metadata = mock(InvocationMetadata.class);
@@ -47,6 +52,11 @@ public class MultipartParameterStreamResolverTest {
         when(context.getQueryParameters()).thenReturn(empty);
         when(context.getMatrixParameters()).thenReturn(empty);
         when(context.getRequestMethod()).thenReturn("POST");
+    }
+
+    @After
+    public void tearDown() {
+        ApplicationPropertiesHolder.dispose(mock(Application.class));
     }
 
     @Test
