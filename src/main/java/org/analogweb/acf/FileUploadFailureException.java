@@ -12,12 +12,12 @@ import org.apache.commons.fileupload.FileUploadException;
 public class FileUploadFailureException extends ApplicationRuntimeException {
 
     private static final long serialVersionUID = 939190704851384887L;
-    
-    public FileUploadFailureException(FileUploadException e){
+
+    public FileUploadFailureException(FileUploadException e) {
         super(e);
     }
 
-    public FileUploadFailureException(IOException e){
+    public FileUploadFailureException(IOException e) {
         super(e);
     }
 }

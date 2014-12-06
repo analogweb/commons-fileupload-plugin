@@ -41,17 +41,17 @@ public class MultipartParameterResolver extends ParameterValueResolver {
         if (parameters == null) {
             if (isMultipartContentOnCurrentRequest(request)) {
                 log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000001");
-                FileUpload fileUpload = getFileUpload(getFileItemFactory());
+                final FileUpload fileUpload = getFileUpload(getFileItemFactory());
                 log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000002", new Object[] { fileUpload });
-                String encoding = resolveEncoding(request);
+                final String encoding = resolveEncoding(request);
                 log.log(PLUGIN_MESSAGE_RESOURCE, "DACF000003", new Object[] { encoding });
                 try {
                     parameters = createMultipartParameters(request, createRequestContext(request),
                             fileUpload, encoding);
                     CurrentMultipartParameters.put(request, parameters);
-                } catch (FileUploadException e) {
+                } catch (final FileUploadException e) {
                     throw new FileUploadFailureException(e);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new FileUploadFailureException(e);
                 }
             } else {
@@ -72,13 +72,13 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     protected Object resolveParameterizedValue(RequestContext request, InvocationMetadata metadata,
             String name, Class<?> requiredType, Annotation[] annotations,
             MultipartParameters<Multipart> parameters) {
-        Multipart[] value = parameters.getMultiparts(name);
+        final Multipart[] value = parameters.getMultiparts(name);
         if (ArrayUtils.isNotEmpty(value)) {
             log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000004", new Object[] { name, value });
             if (isEqualsType(ClassUtils.forNameQuietly("[L" + File.class.getName() + ";"),
                     requiredType)) {
-                List<File> files = new ArrayList<File>();
-                for (Multipart mp : value) {
+                final List<File> files = new ArrayList<File>();
+                for (final Multipart mp : value) {
                     File f;
                     if (mp instanceof FileItemMultipart
                             && (f = ((FileItemMultipart) mp).getAsTemporalyFile()) != null) {
@@ -90,7 +90,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
                     ClassUtils.forNameQuietly("[L" + Multipart.class.getName() + ";"), requiredType)) {
                 return value;
             }
-            Multipart mp = value[0];
+            final Multipart mp = value[0];
             if (isEqualsType(InputStream.class, requiredType)) {
                 return mp.getInputStream();
             } else if (isEqualsType(File.class, requiredType)) {
@@ -111,11 +111,11 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     }
 
     protected boolean isMultipartContentOnCurrentRequest(RequestContext request) {
-        String method = request.getRequestMethod();
+        final String method = request.getRequestMethod();
         if (StringUtils.isEmpty(method) || method.equalsIgnoreCase("POST") == false) {
             return false;
         }
-        MediaType type = request.getContentType();
+        final MediaType type = request.getContentType();
         if (type == null) {
             return false;
         }
@@ -123,7 +123,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     }
 
     protected String resolveEncoding(RequestContext request) {
-        String encoding = request.getCharacterEncoding();
+        final String encoding = request.getCharacterEncoding();
         if (StringUtils.isNotEmpty(encoding)) {
             return encoding;
         }
@@ -134,7 +134,7 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     protected <T extends Multipart> MultipartParameters<T> createMultipartParameters(
             RequestContext request, org.apache.commons.fileupload.RequestContext context,
             FileUpload fileUpload, String resolvedEncoding) throws FileUploadException, IOException {
-        List<FileItem> fileItems = fileUpload.parseRequest(context);
+        final List<FileItem> fileItems = fileUpload.parseRequest(context);
         log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000003", fileItems.size());
         return (MultipartParameters<T>) new FileItemMultipartParameters(fileItems, resolvedEncoding);
     }
@@ -149,8 +149,9 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     }
 
     protected FileItemFactory createFileItemFactory() {
-        DiskFileItemFactory factory =  new DiskFileItemFactory(DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD,
-                ApplicationPropertiesHolder.current().getTempDir());
+        final DiskFileItemFactory factory = new DiskFileItemFactory(
+                DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD, ApplicationPropertiesHolder.current()
+                .getTempDir());
         factory.setFileCleaningTracker(new FileCleaningTracker());
         return factory;
     }

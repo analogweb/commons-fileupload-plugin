@@ -17,14 +17,14 @@ public class DefaultFileUploadFactory implements FileUploadFactory<FileUpload> {
 
     @Override
     public FileUpload createFileUpload() {
-        FileUpload upload = new FileUpload();
+        final FileUpload upload = new FileUpload();
         setUpFileUpload(upload);
         return upload;
     }
 
     @Override
     public FileUpload createFileUpload(FileItemFactory fileItemFactory) {
-        FileUpload upload = new FileUpload(fileItemFactory);
+        final FileUpload upload = new FileUpload(fileItemFactory);
         setUpFileUpload(upload);
         return upload;
     }
@@ -67,5 +67,4 @@ public class DefaultFileUploadFactory implements FileUploadFactory<FileUpload> {
     public void setListener(ProgressListener listener) {
         this.listener = listener;
     }
-
 }

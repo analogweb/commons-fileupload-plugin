@@ -35,7 +35,7 @@ public class FileItemMultipart implements Multipart {
     public InputStream getInputStream() {
         try {
             return item.getInputStream();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ApplicationRuntimeException(e) {
 
                 private static final long serialVersionUID = 1L;
@@ -55,13 +55,13 @@ public class FileItemMultipart implements Multipart {
 
     public File getAsTemporalyFile() {
         if (item instanceof DiskFileItem) {
-            DiskFileItem d = ((DiskFileItem) item);
+            final DiskFileItem d = ((DiskFileItem) item);
             if (d.isInMemory()) {
-                File f = d.getStoreLocation();
+                final File f = d.getStoreLocation();
                 try {
                     d.write(f);
                     return f;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     return null;
                 }
             } else {

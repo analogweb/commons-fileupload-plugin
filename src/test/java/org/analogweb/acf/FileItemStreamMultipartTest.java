@@ -18,66 +18,64 @@ import org.junit.rules.ExpectedException;
 public class FileItemStreamMultipartTest {
 
     private FileItemStreamMultipart file;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testGetParameterName() {
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
         when(item.getFieldName()).thenReturn("foo");
-        String actual = file.getName();
+        final String actual = file.getName();
         assertThat(actual, is("foo"));
     }
 
     @Test
     public void testGetFileName() {
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
         when(item.getName()).thenReturn("foo.xml");
-        String actual = file.getResourceName();
+        final String actual = file.getResourceName();
         assertThat(actual, is("foo.xml"));
     }
 
     @Test
     public void testGetInputStream() throws Exception {
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
-        InputStream in = mock(InputStream.class);
+        final InputStream in = mock(InputStream.class);
         when(item.openStream()).thenReturn(in);
-        InputStream actual = file.getInputStream();
+        final InputStream actual = file.getInputStream();
         assertThat(actual, is(in));
     }
 
     @Test
     public void testGetInputStreamAndThrowIOException() throws Exception {
         thrown.expect(FileUploadFailureException.class);
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
         when(item.openStream()).thenThrow(new IOException());
-        InputStream actual = file.getInputStream();
+        final InputStream actual = file.getInputStream();
         assertNull(actual);
     }
 
     @Test
     public void testGetBytes() throws Exception {
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
-        InputStream in = new ByteArrayInputStream(new byte[] { 0x00, 0x01 });
+        final InputStream in = new ByteArrayInputStream(new byte[] { 0x00, 0x01 });
         when(item.openStream()).thenReturn(in);
-        byte[] actual = file.getBytes();
+        final byte[] actual = file.getBytes();
         assertThat(actual[0], is((byte) 0x00));
         assertThat(actual[1], is((byte) 0x01));
     }
 
     @Test
     public void testGetContentType() {
-        FileItemStream item = mock(FileItemStream.class);
+        final FileItemStream item = mock(FileItemStream.class);
         file = new FileItemStreamMultipart(item);
         when(item.getContentType()).thenReturn("application/xml");
-        String actual = file.getContentType();
+        final String actual = file.getContentType();
         assertThat(actual, is("application/xml"));
     }
-
 }

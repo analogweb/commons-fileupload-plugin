@@ -23,7 +23,8 @@ import org.apache.commons.fileupload.FileUploadException;
  * を読み出すことが可能です。
  * @author snowgoose
  */
-public class FileItemStreamMultipartParameters implements MultipartParameters<FileItemStreamMultipart> {
+public class FileItemStreamMultipartParameters implements
+MultipartParameters<FileItemStreamMultipart> {
 
     private static final Log log = Logs.getLog(FileItemStreamMultipartParameters.class);
     private final FileItemIterator iterator;
@@ -34,6 +35,7 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
         this.resolvedEncoding = encoding;
     }
 
+    @Override
     public Iterator<FileItemStreamMultipart> iterator() {
         return new Iterator<FileItemStreamMultipart>() {
 
@@ -41,9 +43,9 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
             public boolean hasNext() {
                 try {
                     return iterator.hasNext();
-                } catch (FileUploadException e) {
+                } catch (final FileUploadException e) {
                     throw new FileUploadFailureException(e);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new FileUploadFailureException(e);
                 }
             }
@@ -53,9 +55,9 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
                 try {
                     final FileItemStream stream = iterator.next();
                     return new FileItemStreamMultipart(stream);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new FileUploadFailureException(e);
-                } catch (FileUploadException e) {
+                } catch (final FileUploadException e) {
                     throw new FileUploadFailureException(e);
                 }
             }
@@ -69,14 +71,17 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
 
     private Map<String, String[]> params;
 
+    @Override
     public String[] getParameter(String name) {
         return getParameterMap().get(name);
     }
 
+    @Override
     public Collection<String> getParameterNames() {
         return getParameterMap().keySet();
     }
 
+    @Override
     public Map<String, String[]> getParameterMap() {
         extractParameters();
         return this.params;
@@ -84,10 +89,12 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
 
     private Map<String, FileItemStreamMultipart[]> files;
 
+    @Override
     public FileItemStreamMultipart[] getMultiparts(String name) {
         return asMap().get(name);
     }
 
+    @Override
     public Collection<String> getMultipartParameterNames() {
         return asMap().keySet();
     }
@@ -103,14 +110,14 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
         }
         this.params = Maps.newEmptyHashMap();
         this.files = Maps.newEmptyHashMap();
-        for (FileItemStreamMultipart param : this) {
-            String paramName = param.getName();
+        for (final FileItemStreamMultipart param : this) {
+            final String paramName = param.getName();
             if (param.isMultipartFile()) {
                 log.log(PLUGIN_MESSAGE_RESOURCE, "TACF000002", new Object[] { paramName });
                 if (this.files.containsKey(paramName) == false) {
                     this.files.put(paramName, new FileItemStreamMultipart[0]);
                 }
-                FileItemStreamMultipart[] fileArray = this.files.get(paramName);
+                final FileItemStreamMultipart[] fileArray = this.files.get(paramName);
                 this.files.put(paramName,
                         ArrayUtils.add(FileItemStreamMultipart.class, param, fileArray));
             } else {
@@ -118,15 +125,14 @@ public class FileItemStreamMultipartParameters implements MultipartParameters<Fi
                 if (this.params.containsKey(paramName) == false) {
                     this.params.put(paramName, new String[0]);
                 }
-                String[] array = this.params.get(paramName);
+                final String[] array = this.params.get(paramName);
                 try {
                     this.params.put(paramName, ArrayUtils.add(String.class,
                             new String(param.getBytes(), resolvedEncoding), array));
-                } catch (UnsupportedEncodingException e) {
+                } catch (final UnsupportedEncodingException e) {
                     throw new FileUploadFailureException(e);
                 }
             }
         }
     }
-
 }

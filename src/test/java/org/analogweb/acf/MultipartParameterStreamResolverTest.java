@@ -42,7 +42,8 @@ public class MultipartParameterStreamResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        ApplicationPropertiesHolder.configure(mock(Application.class), DefaultApplicationProperties.defaultProperties());
+        ApplicationPropertiesHolder.configure(mock(Application.class),
+                DefaultApplicationProperties.defaultProperties());
         resolver = new MultipartParameterStreamResolver();
         context = mock(RequestContext.class);
         metadata = mock(InvocationMetadata.class);
@@ -62,32 +63,30 @@ public class MultipartParameterStreamResolverTest {
     @Test
     public void testResolveAttributeParameterValue() {
         when(params.getValues("foo")).thenReturn(Arrays.asList("baa"));
-        Object actual = resolver.resolveValue(context, metadata, "foo", String.class, null);
+        final Object actual = resolver.resolveValue(context, metadata, "foo", String.class, null);
         assertThat((String) actual, is("baa"));
     }
 
     @Test
     public void testResolveAttributeParameterValues() {
-        String[] expected = { "baa", "baz" };
+        final String[] expected = { "baa", "baz" };
         when(context.getRequestMethod()).thenReturn("GET");
         when(params.getValues("foo")).thenReturn(Arrays.asList(expected));
-        Object actual = resolver.resolveValue(context, metadata, "foo", String[].class, null);
+        final Object actual = resolver.resolveValue(context, metadata, "foo", String[].class, null);
         assertThat((String[]) actual, is(expected));
     }
-
 
     @Test
     @SuppressWarnings("unchecked")
     public void testResolveAttributeWithMultipartArray() {
-    	thrown.expect(UnsupportedParameterTypeException.class);
-        Multipart file = mock(Multipart.class);
-        Multipart file2 = mock(Multipart.class);
-        MultipartParameters<Multipart> params = mock(MultipartParameters.class);
-        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
-                params);
+        thrown.expect(UnsupportedParameterTypeException.class);
+        final Multipart file = mock(Multipart.class);
+        final Multipart file2 = mock(Multipart.class);
+        final MultipartParameters<Multipart> params = mock(MultipartParameters.class);
+        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(params);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { file, file2 });
-        Object actual = resolver.resolveValue(context, metadata, "foo", Multipart[].class, null);
-        Multipart[] actualFiles = (Multipart[]) actual;
+        final Object actual = resolver.resolveValue(context, metadata, "foo", Multipart[].class, null);
+        final Multipart[] actualFiles = (Multipart[]) actual;
         assertThat(actualFiles[0], is(file));
         assertThat(actualFiles[1], is(file2));
     }
@@ -95,30 +94,29 @@ public class MultipartParameterStreamResolverTest {
     @Test
     @SuppressWarnings("rawtypes")
     public void testResolveAttributeMultipartParameters() {
-        MultipartParameters params = mock(MultipartParameters.class);
-        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
-                params);
-        Object actual = resolver.resolveValue(context, metadata, "", Iterable.class, null);
+        final MultipartParameters params = mock(MultipartParameters.class);
+        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(params);
+        final Object actual = resolver.resolveValue(context, metadata, "", Iterable.class, null);
         assertThat((MultipartParameters) actual, is(params));
     }
 
     @SuppressWarnings("unchecked")
-	@Test
+    @Test
     public void testResolveAttributeMultipartNotAvairableParameters() throws Exception {
         when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(null);
         when(context.getContentLength()).thenReturn(199L);
-        MediaType mt = MediaTypes.valueOf("multipart/form-data; boundary=------------------------------4ebf00fbcf09");
+        final MediaType mt = MediaTypes
+                .valueOf("multipart/form-data; boundary=------------------------------4ebf00fbcf09");
         when(context.getContentType()).thenReturn(mt);
-        byte[] part = new StringBuilder()
+        final byte[] part = new StringBuilder()
         .append("--------------------------------4ebf00fbcf09\r\n")
         .append("Content-Disposition: form-data; name=\"example\"\r\n")
-        .append("Content-Type: text/plain\r\n")
-        .append("\r\n")
-        .append("test\r\n")
+        .append("Content-Type: text/plain\r\n").append("\r\n").append("test\r\n")
         .append("--------------------------------4ebf00fbcf09--\r\n").toString().getBytes();
         when(context.getRequestBody()).thenReturn(new ByteArrayInputStream(part));
-        Iterable<Multipart> actual = (Iterable<Multipart>) resolver.resolveValue(context, metadata, "", Iterable.class, null);
-        Multipart actualPart = actual.iterator().next();
+        final Iterable<Multipart> actual = (Iterable<Multipart>) resolver.resolveValue(context, metadata,
+                "", Iterable.class, null);
+        final Multipart actualPart = actual.iterator().next();
         assertThat(actualPart.getName(), is("example"));
         assertThat(IOUtils.toString(actualPart.getInputStream()), is("test"));
     }
@@ -130,7 +128,7 @@ public class MultipartParameterStreamResolverTest {
             @Override
             public boolean matches(Object obj) {
                 if (obj instanceof UnsupportedParameterTypeException) {
-                    UnsupportedParameterTypeException un = (UnsupportedParameterTypeException) obj;
+                    final UnsupportedParameterTypeException un = (UnsupportedParameterTypeException) obj;
                     assertThat(un.getSpecifiedType().getCanonicalName(),
                             is(InputStream[].class.getCanonicalName()));
                     assertThat(un.getMissedParameterName(), is("foo"));
@@ -145,12 +143,12 @@ public class MultipartParameterStreamResolverTest {
             }
         });
         @SuppressWarnings("rawtypes")
+        final
         MultipartParameters params = mock(MultipartParameters.class);
-        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(
-                params);
-        Multipart multipart = mock(Multipart.class);
+        when(context.getAttribute(CurrentMultipartParameters.ATTRIBUTE_NAME)).thenReturn(params);
+        final Multipart multipart = mock(Multipart.class);
         when(params.getMultiparts("foo")).thenReturn(new Multipart[] { multipart });
-        Object actual = resolver.resolveValue(context, metadata, "foo", InputStream[].class, null);
+        final Object actual = resolver.resolveValue(context, metadata, "foo", InputStream[].class, null);
         assertThat((Multipart) actual, is(multipart));
     }
 }

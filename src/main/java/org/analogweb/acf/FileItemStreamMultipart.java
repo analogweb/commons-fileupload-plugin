@@ -44,7 +44,7 @@ public class FileItemStreamMultipart implements Multipart {
         }
         try {
             return this.item.openStream();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new FileUploadFailureException(e);
         }
     }
@@ -54,7 +54,7 @@ public class FileItemStreamMultipart implements Multipart {
         if (this.extracted != null) {
             return Arrays.copyOf(this.extracted, this.extracted.length);
         }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
         IOUtils.copyQuietly(getInputStream(), out);
         return out.toByteArray();
     }
@@ -74,5 +74,4 @@ public class FileItemStreamMultipart implements Multipart {
     void extract() {
         this.extracted = getBytes();
     }
-
 }

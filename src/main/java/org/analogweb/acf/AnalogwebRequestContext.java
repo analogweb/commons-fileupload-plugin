@@ -8,33 +8,31 @@ import org.analogweb.RequestContext;
 /**
  * @author snowgooseyk
  */
-public class AnalogwebRequestContext implements
-		org.apache.commons.fileupload.RequestContext {
+public class AnalogwebRequestContext implements org.apache.commons.fileupload.RequestContext {
 
-	private org.analogweb.RequestContext request;
+    private final org.analogweb.RequestContext request;
 
-	public AnalogwebRequestContext(RequestContext request) {
-		this.request = request;
-	}
+    public AnalogwebRequestContext(RequestContext request) {
+        this.request = request;
+    }
 
-	@Override
-	public String getCharacterEncoding() {
-		return request.getCharacterEncoding();
-	}
+    @Override
+    public String getCharacterEncoding() {
+        return request.getCharacterEncoding();
+    }
 
-	@Override
-	public String getContentType() {
-		return request.getContentType().toString();
-	}
+    @Override
+    public String getContentType() {
+        return request.getContentType().toString();
+    }
 
-	@Override
-	public int getContentLength() {
-		return (int) request.getContentLength();
-	}
+    @Override
+    public int getContentLength() {
+        return (int) request.getContentLength();
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		return request.getRequestBody();
-	}
-
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return request.getRequestBody();
+    }
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.analogweb.Multipart;
 
-public interface MultipartParameters<T extends Multipart> extends Iterable<T>{
+public interface MultipartParameters<T extends Multipart> extends Iterable<T> {
 
     String[] getParameter(String name);
 
@@ -16,5 +16,4 @@ public interface MultipartParameters<T extends Multipart> extends Iterable<T>{
     T[] getMultiparts(String name);
 
     Collection<String> getMultipartParameterNames();
-
 }

@@ -26,5 +26,4 @@ public interface FileUploadFactory<T extends FileUpload> {
      * @return 新しい{@link FileUpload}のインスタンス
      */
     T createFileUpload(FileItemFactory fileItemFactory);
-
 }

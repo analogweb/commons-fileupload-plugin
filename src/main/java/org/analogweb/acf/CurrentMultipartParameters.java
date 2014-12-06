@@ -9,7 +9,7 @@ class CurrentMultipartParameters {
 
     @SuppressWarnings("unchecked")
     static <T extends Multipart> MultipartParameters<T> get(RequestContext request) {
-        Object value = request.getAttribute(ATTRIBUTE_NAME);
+        final Object value = request.getAttribute(ATTRIBUTE_NAME);
         if (value instanceof MultipartParameters) {
             return (MultipartParameters<T>) value;
         }
@@ -21,7 +21,6 @@ class CurrentMultipartParameters {
     }
 
     static void dispose(RequestContext request) {
-        request.setAttribute(ATTRIBUTE_NAME,null);
+        request.setAttribute(ATTRIBUTE_NAME, null);
     }
-
 }
