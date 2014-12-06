@@ -14,6 +14,7 @@ import org.analogweb.MediaType;
 import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
 import org.analogweb.core.ParameterValueResolver;
+import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ArrayUtils;
 import org.analogweb.util.ClassUtils;
 import org.analogweb.util.StringUtils;
@@ -24,6 +25,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.FileCleaningTracker;
 
 public class MultipartParameterResolver extends ParameterValueResolver {
 
@@ -147,7 +149,10 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     }
 
     protected FileItemFactory createFileItemFactory() {
-        return new DiskFileItemFactory();
+        DiskFileItemFactory factory =  new DiskFileItemFactory(DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD,
+                ApplicationPropertiesHolder.current().getTempDir());
+        factory.setFileCleaningTracker(new FileCleaningTracker());
+        return factory;
     }
 
     protected FileUpload getFileUpload(FileItemFactory fileItemFactory) {
