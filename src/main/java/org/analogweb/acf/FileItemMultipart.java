@@ -6,11 +6,15 @@ import java.io.InputStream;
 
 import org.analogweb.Multipart;
 import org.analogweb.core.ApplicationRuntimeException;
+import org.analogweb.util.IOUtils;
+import org.analogweb.util.logging.Log;
+import org.analogweb.util.logging.Logs;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
 public class FileItemMultipart implements Multipart {
 
+    private static final Log log = Logs.getLog(FileItemMultipart.class);
     private final FileItem item;
 
     public FileItemMultipart(FileItem item) {
@@ -56,16 +60,18 @@ public class FileItemMultipart implements Multipart {
     public File getAsTemporalyFile() {
         if (item instanceof DiskFileItem) {
             final DiskFileItem d = ((DiskFileItem) item);
-            if (d.isInMemory()) {
-                final File f = d.getStoreLocation();
-                try {
-                    d.write(f);
-                    return f;
-                } catch (final Exception e) {
-                    return null;
-                }
+            final File f = d.getStoreLocation();
+            if (f != null) {
+                return f;
             } else {
-                return d.getStoreLocation();
+                try {
+                    // Force output to file.
+                    IOUtils.copy(d.getInputStream(), d.getOutputStream());
+                    return d.getStoreLocation();
+                } catch (IOException e) {
+                    log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE, "WACF000002",
+                            e, d.getName());
+                }
             }
         }
         return null;

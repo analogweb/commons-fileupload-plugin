@@ -149,9 +149,22 @@ public class MultipartParameterResolver extends ParameterValueResolver {
     }
 
     protected FileItemFactory createFileItemFactory() {
+        File tmpDir = ApplicationPropertiesHolder.current()
+                .getTempDir();
+        if (tmpDir.exists() == false) {
+            try {
+                boolean created = tmpDir.mkdirs();
+                if (created == false) {
+                    log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE, "WACF000003",
+                            tmpDir.getPath());
+                }
+            } catch (SecurityException e) {
+                log.log(CommonsFileUploadModulesConfig.PLUGIN_MESSAGE_RESOURCE, "WACF000003", e,
+                        tmpDir.getPath());
+            }
+        }
         final DiskFileItemFactory factory = new DiskFileItemFactory(
-                DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD, ApplicationPropertiesHolder.current()
-                .getTempDir());
+                DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD, tmpDir);
         factory.setFileCleaningTracker(new FileCleaningTracker());
         return factory;
     }
