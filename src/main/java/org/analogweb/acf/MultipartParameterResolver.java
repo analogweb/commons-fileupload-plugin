@@ -13,7 +13,9 @@ import org.analogweb.InvocationMetadata;
 import org.analogweb.MediaType;
 import org.analogweb.Multipart;
 import org.analogweb.RequestContext;
+import org.analogweb.core.MediaTypes;
 import org.analogweb.core.ParameterValueResolver;
+import org.analogweb.core.SpecificMediaTypeRequestValueResolver;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.ArrayUtils;
 import org.analogweb.util.ClassUtils;
@@ -27,12 +29,17 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.FileCleaningTracker;
 
-public class MultipartParameterResolver extends ParameterValueResolver {
+public class MultipartParameterResolver extends ParameterValueResolver implements SpecificMediaTypeRequestValueResolver {
 
     private static final Log log = Logs.getLog(MultipartParameterResolver.class);
     private FileItemFactory fileItemFactory = createFileItemFactory();
     private FileUploadFactory<? extends FileUpload> fileUploadFactory = new DefaultFileUploadFactory();
     private final String defaultEncoding = "UTF-8";
+
+    @Override
+    public boolean supports(MediaType mediaType) {
+        return MediaTypes.MULTIPART_FORM_DATA_TYPE.isCompatible(mediaType);
+    }
 
     @Override
     public Object resolveValue(RequestContext request, InvocationMetadata metadata, String name,
