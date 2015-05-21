@@ -10,7 +10,7 @@ Example In Scala
 Add SBT dependency.([scala-plugin](https://github.com/analogweb/scala-plugin) includes this plugin on dependency.)
 
 ```scala
-val scalaplugin = "org.analogweb" %% "analogweb-scala" % "0.9.2-SNAPSHOT"
+val scalaplugin = "org.analogweb" %% "analogweb-scala" % "0.9.6-SNAPSHOT"
 ```
 
 Write them.
@@ -41,7 +41,7 @@ Add Maven dependency.
 <dependency>
  <groupId>org.analogweb</groupId>
  <artifactId>analogweb-commons-fileupload</artifactId>
- <version>0.9.2-SNAPSHOT</version>
+ <version>0.9.6-SNAPSHOT</version>
 </dependency>
 ```
 
