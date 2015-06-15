@@ -79,15 +79,6 @@ public class MultipartParameterResolverTest {
     }
 
     @Test
-    public void testResolveAttributeParameterValues() {
-        final String[] expected = { "baa", "baz" };
-        when(context.getRequestMethod()).thenReturn("GET");
-        when(params.getValues("foo")).thenReturn(Arrays.asList(expected));
-        final Object actual = resolver.resolveValue(context, metadata, "foo", String[].class, null);
-        assertThat((String[]) actual, is(expected));
-    }
-
-    @Test
     public void testResolveAttributeFileValueCreateFileUpload() {
         final FileItemFactory fileItemFactory = mock(FileItemFactory.class);
         resolver.setFileItemFactory(fileItemFactory);

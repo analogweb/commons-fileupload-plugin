@@ -68,15 +68,6 @@ public class MultipartParameterStreamResolverTest {
     }
 
     @Test
-    public void testResolveAttributeParameterValues() {
-        final String[] expected = { "baa", "baz" };
-        when(context.getRequestMethod()).thenReturn("GET");
-        when(params.getValues("foo")).thenReturn(Arrays.asList(expected));
-        final Object actual = resolver.resolveValue(context, metadata, "foo", String[].class, null);
-        assertThat((String[]) actual, is(expected));
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void testResolveAttributeWithMultipartArray() {
         thrown.expect(UnsupportedParameterTypeException.class);
