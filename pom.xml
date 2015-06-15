@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>org.analogweb</groupId>
 			<artifactId>analogweb-core</artifactId>
-			<version>0.9.6</version>
+			<version>0.9.7</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
