@@ -21,7 +21,7 @@
 	<groupId>org.analogweb</groupId>
 	<artifactId>analogweb-commons-fileupload</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.8-SNAPSHOT</version>
+	<version>0.9.8</version>
 	<name>analogweb-commons-fileupload</name>
 	<url>http://analogweb.org</url>
 	<organization>
@@ -39,7 +39,8 @@
 		<url>scm:git:git@github.com:analogweb/commons-fileupload-plugin.git</url>
 		<connection>scm:git:git@github.com:analogweb/commons-fileupload-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:analogweb/commons-fileupload-plugin.git</developerConnection>
-    </scm>
+      <tag>v0.9.8</tag>
+  </scm>
 	<licenses>
 		<license>
 			<name>MIT license</name>
@@ -58,7 +59,7 @@
 		<dependency>
 			<groupId>org.analogweb</groupId>
 			<artifactId>analogweb-core</artifactId>
-			<version>0.9.8-SNAPSHOT</version>
+			<version>0.9.8</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
