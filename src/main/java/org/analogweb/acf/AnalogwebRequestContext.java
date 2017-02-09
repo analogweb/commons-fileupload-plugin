@@ -33,6 +33,6 @@ public class AnalogwebRequestContext implements org.apache.commons.fileupload.Re
 
     @Override
     public InputStream getInputStream() throws IOException {
-        return request.getRequestBody();
+        return request.getRequestBody().asInputStream();
     }
 }

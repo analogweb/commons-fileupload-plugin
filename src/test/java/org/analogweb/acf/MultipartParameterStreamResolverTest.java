@@ -16,6 +16,7 @@ import org.analogweb.Multipart;
 import org.analogweb.Parameters;
 import org.analogweb.RequestContext;
 import org.analogweb.core.DefaultApplicationProperties;
+import org.analogweb.core.DefaultReadableBuffer;
 import org.analogweb.core.MediaTypes;
 import org.analogweb.util.ApplicationPropertiesHolder;
 import org.analogweb.util.IOUtils;
@@ -104,7 +105,7 @@ public class MultipartParameterStreamResolverTest {
         .append("Content-Disposition: form-data; name=\"example\"\r\n")
         .append("Content-Type: text/plain\r\n").append("\r\n").append("test\r\n")
         .append("--------------------------------4ebf00fbcf09--\r\n").toString().getBytes();
-        when(context.getRequestBody()).thenReturn(new ByteArrayInputStream(part));
+        when(context.getRequestBody()).thenReturn(DefaultReadableBuffer.readBuffer(new ByteArrayInputStream(part)));
         final Iterable<Multipart> actual = (Iterable<Multipart>) resolver.resolveValue(context, metadata,
                 "", Iterable.class, null);
         final Multipart actualPart = actual.iterator().next();
